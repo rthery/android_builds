@@ -1,0 +1,242 @@
+[
+  {
+    "path": "build/make",
+    "upstream": "https://gitlab.e.foundation/e/os/android_build",
+    "base": "dccace02e4b7964cf8729745739891d6111c5a42",
+    "revision": "d7a348416d403b6ff4a59aea619b86667f2291ec",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/eos_android_build",
+    "commits": [
+      "d7a348416d403b6ff4a59aea619b86667f2291ec"
+    ]
+  },
+  {
+    "path": "device/lge/bullhead",
+    "upstream": "https://github.com/nexus5x-dev/device_lge_bullhead",
+    "base": "bb7f54bbee030d78d5fce5fa96c916c199badeb1",
+    "revision": "28c0d6284dd0fbf19f5dda9502710c962f1eaf26",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_device_lge_bullhead",
+    "commits": [
+      "afd2ffcb1321ae9888b643c1a2d933d2a1fca586",
+      "f9a4acc682d42c806b8ec1799a5f25471050a320",
+      "10c9dac84f23a5ffd4cbf3c723083056caa7b2b3",
+      "c36737d780216143eb326308dd9a69fd39cd9498",
+      "9f199c1b97dbafb7ff84a8a9900ce4c4e8a10ff5",
+      "8b99c37fac335f65227a24ad359a95e72ebb15a2",
+      "28c0d6284dd0fbf19f5dda9502710c962f1eaf26"
+    ]
+  },
+  {
+    "path": "frameworks/native",
+    "upstream": "https://gitlab.e.foundation/e/os/android_frameworks_native",
+    "base": "73de44e328c09ce2da02c3a789d501fa03280641",
+    "revision": "1f13d8fd75884800b2b0fa30250012b8c93e9496",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/eos_android_frameworks_native",
+    "commits": [
+      "1f13d8fd75884800b2b0fa30250012b8c93e9496"
+    ]
+  },
+  {
+    "path": "hardware/interfaces",
+    "upstream": "https://gitlab.e.foundation/e/os/android_hardware_interfaces",
+    "base": "5653586a6bd4c1fe53bd47a37d72a6569a9e5abc",
+    "revision": "41eba1112955ec7acb8f69cc70edf9de24b5b3fa",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/eos_android_hardware_interfaces",
+    "commits": [
+      "41eba1112955ec7acb8f69cc70edf9de24b5b3fa"
+    ]
+  },
+  {
+    "path": "hardware/libhardware_legacy",
+    "upstream": "https://github.com/LineageOS/android_hardware_libhardware_legacy",
+    "base": "50d9f52f7a7d4c70f10d6a9dca9a1f83a16c85ca",
+    "revision": "885778d4d8092e51e82b6cde79b3bb2ebf91991d",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_hardware_libhardware_legacy",
+    "commits": [
+      "885778d4d8092e51e82b6cde79b3bb2ebf91991d"
+    ]
+  },
+  {
+    "path": "hardware/lineage/interfaces",
+    "upstream": "https://github.com/LineageOS/android_hardware_lineage_interfaces",
+    "base": "56bf43755bdc4045ec56b4c02eaaaf9894f91003",
+    "revision": "29cf48ba9ec3a9b7f0ed5ae761604235d0ba7a60",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_hardware_lineage_interfaces",
+    "commits": [
+      "29cf48ba9ec3a9b7f0ed5ae761604235d0ba7a60"
+    ]
+  },
+  {
+    "path": "hardware/qcom/audio",
+    "upstream": "https://github.com/LineageOS/android_hardware_qcom_audio",
+    "base": "7f80cf1d4880f8946250dd20f158985123934fee",
+    "revision": "b2e81d15f0ab1b4e6593655142fe2b43a8958b17",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_hardware_qcom_audio",
+    "commits": [
+      "b2e81d15f0ab1b4e6593655142fe2b43a8958b17"
+    ]
+  },
+  {
+    "path": "hardware/qcom/bt",
+    "upstream": "https://android.googlesource.com/platform/hardware/qcom/bt",
+    "base": "79ece28f29bf9b49a6527daf3e50f80d31065243",
+    "revision": "1297c42c0b7a10fc549f7ce29eafb0c816813c61",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_hardware_qcom_bt",
+    "commits": [
+      "1297c42c0b7a10fc549f7ce29eafb0c816813c61"
+    ]
+  },
+  {
+    "path": "hardware/qcom/display",
+    "upstream": "https://github.com/LineageOS/android_hardware_qcom_display",
+    "base": "ef09d590fba34c1b5004109bf2c3132e297c6ce5",
+    "revision": "32ae2fcfe5ea7938b21c06ad46c8600f402a0b35",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_hardware_qcom_display",
+    "commits": [
+      "32ae2fcfe5ea7938b21c06ad46c8600f402a0b35"
+    ]
+  },
+  {
+    "path": "hardware/qcom/media",
+    "upstream": "https://github.com/LineageOS/android_hardware_qcom_media",
+    "base": "12862eab9d90466a1ef87fba78737b9f7bfe766c",
+    "revision": "364e0884feac890951043e86af0fe6491354cd47",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_hardware_qcom_media",
+    "commits": [
+      "364e0884feac890951043e86af0fe6491354cd47"
+    ]
+  },
+  {
+    "path": "kernel/lge/bullhead",
+    "upstream": "https://github.com/nexus5x-dev/kernel_lge_bullhead",
+    "base": "14ac716e2c8707b88506add550278f235669daef",
+    "revision": "d23ff8aa2df36cfe194b5f4ccf2f5adb563461d1",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_kernel_lge_bullhead",
+    "commits": [
+      "b561219136e6e8c6f87bb240a800c4c4490ba981",
+      "2b286b032309b60489d77955bff85bbd93073faf",
+      "116e974ca6a969e309f297514608434ccfe7dc88",
+      "d23ff8aa2df36cfe194b5f4ccf2f5adb563461d1"
+    ]
+  },
+  {
+    "path": "packages/modules/Connectivity",
+    "upstream": "https://gitlab.e.foundation/e/os/android_packages_modules_Connectivity",
+    "base": "3ef802e6c195812dac3a512d3a8a03847e6f1d8f",
+    "revision": "b846da4b70eb8e9275848defaf8b649b316a028e",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/eos_android_packages_modules_Connectivity",
+    "commits": [
+      "b846da4b70eb8e9275848defaf8b649b316a028e"
+    ]
+  },
+  {
+    "path": "packages/modules/adb",
+    "upstream": "https://github.com/LineageOS/android_packages_modules_adb",
+    "base": "d1e9657fcc4c95d2d97dd5c7ee20c95b223601dd",
+    "revision": "bb11c840e00a8e7e3aff6b9b05f967f2645b3234",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_packages_modules_adb",
+    "commits": [
+      "bb11c840e00a8e7e3aff6b9b05f967f2645b3234"
+    ]
+  },
+  {
+    "path": "packages/services/Telephony",
+    "upstream": "https://gitlab.e.foundation/e/os/android_packages_services_Telephony",
+    "base": "41868dd1f69724ed6b4f9162e28ac04434ee4f0d",
+    "revision": "eece77ffd741daba604c70d0c184573d096a0261",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/eos_android_packages_services_Telephony",
+    "commits": [
+      "eece77ffd741daba604c70d0c184573d096a0261"
+    ]
+  },
+  {
+    "path": "system/bpf",
+    "upstream": "https://android.googlesource.com/platform/system/bpf",
+    "base": "52121cd0ee9eb6a5624665d3cf8922f7244ef1cd",
+    "revision": "9ce2a3477778efbed71e177f8f1ad172c96bf57d",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_system_bpf",
+    "commits": [
+      "9ce2a3477778efbed71e177f8f1ad172c96bf57d"
+    ]
+  },
+  {
+    "path": "system/core",
+    "upstream": "https://gitlab.e.foundation/e/os/android_system_core",
+    "base": "d006b15ae2c0d073032408570b22caef1b5550f9",
+    "revision": "d26cdd2f192a54c8b96a7e644f9587f8fb61c79f",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_system_core",
+    "commits": [
+      "d26cdd2f192a54c8b96a7e644f9587f8fb61c79f"
+    ]
+  },
+  {
+    "path": "system/netd",
+    "upstream": "https://github.com/LineageOS/android_system_netd",
+    "base": "43d137e94717639b96f5020607920f734433be92",
+    "revision": "5298a16a29a129423d78bb740b4ec60b6a8a0bde",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_system_netd",
+    "commits": [
+      "5298a16a29a129423d78bb740b4ec60b6a8a0bde"
+    ]
+  },
+  {
+    "path": "vendor/lge/bullhead",
+    "upstream": "https://github.com/nexus5x-dev/vendor_lge_bullhead",
+    "base": "3bce2e142f622a354ae248214e31b6b4424fdfef",
+    "extract": "device/lge/bullhead/extract-files.sh"
+  },
+  {
+    "path": "vendor/lineage",
+    "upstream": "https://gitlab.e.foundation/e/os/android_vendor_lineage",
+    "base": "7b48ad613c432ade25f32e061f1a116b67c729fe",
+    "revision": "7d04a83868d204d21d3cdf8561f6f8ea3070ce0c",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/eos_android_vendor_lineage",
+    "commits": [
+      "7d04a83868d204d21d3cdf8561f6f8ea3070ce0c"
+    ]
+  },
+  {
+    "path": "bionic",
+    "upstream": "https://github.com/LineageOS/android_bionic",
+    "base": "e0aac7df6f58138dae903b5d456c947a3f8092ea",
+    "revision": "95cdbdb47a1978acda93413ab08ec8115606b5d5",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_bionic",
+    "commits": [
+      "118484a5cf9716cf017c3bcbe4112c7a68fb9a57",
+      "ea4a3db748bd96bb72a4e0f538589d0c0ecf6a0f",
+      "5bb90221b58ed1dbbe41b8b58ff105a2185ce4c1",
+      "95cdbdb47a1978acda93413ab08ec8115606b5d5"
+    ]
+  },
+  {
+    "path": "frameworks/av",
+    "upstream": "https://github.com/LineageOS/android_frameworks_av",
+    "base": "277f415df6280e5c5c8b2eef53118e15e8af5a19",
+    "revision": "4f3f683c78d650da87cbe00105c3281ff7badcc6",
+    "branch": "eos-3.2-t",
+    "repository": "https://github.com/rthery/android_frameworks_av",
+    "commits": [
+      "fea84a828c573f1ac70b5df758ff8bd387745523",
+      "cb249a4781f020a915fe61dfaaf65c9bba4d891e",
+      "4f3f683c78d650da87cbe00105c3281ff7badcc6"
+    ]
+  }
+]
