@@ -1,0 +1,57 @@
+name: Android build
+
+on:
+  workflow_dispatch:
+    inputs:
+      device:
+        description: Device codename from devices/<codename>
+        required: true
+        type: string
+        default: bullhead
+      mode:
+        description: Build operation
+        required: true
+        type: choice
+        options:
+          - verify
+          - development
+
+permissions:
+  contents: read
+
+concurrency:
+  group: eos-builder
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.actor == 'rthery' && github.triggering_actor == 'rthery' && github.ref == 'refs/heads/main'
+    runs-on: [self-hosted, Linux, X64, eos-builder]
+    timeout-minutes: 1440
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out the exact workflow revision
+        env:
+          REPOSITORY: ${{ github.repository }}
+          SERVER_URL: ${{ github.server_url }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          git init .
+          if git remote get-url origin >/dev/null 2>&1; then
+            git remote set-url origin "${SERVER_URL}/${REPOSITORY}.git"
+          else
+            git remote add origin "${SERVER_URL}/${REPOSITORY}.git"
+          fi
+          git fetch --depth=1 origin "$SOURCE_SHA"
+          git checkout --force --detach FETCH_HEAD
+
+      - name: Run the shared build wrapper
+        env:
+          DEVICE: ${{ inputs.device }}
+          MODE: ${{ inputs.mode }}
+        run: |
+          set -euo pipefail
+          bash ./scripts/ci-build.sh "$DEVICE" "$MODE"
