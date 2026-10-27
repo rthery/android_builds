@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="rthery" fetch="https://github.com/rthery" />
+
+  <remove-project name="LineageOS/android_build_soong" />
+  <remove-project name="LineageOS/android_frameworks_av" />
+  <remove-project name="LineageOS/android_frameworks_base" />
+  <remove-project name="LineageOS/android_frameworks_opt_telephony" />
+  <remove-project name="LineageOS/android_hardware_interfaces" />
+  <remove-project name="LineageOS/android_hardware_lineage_interfaces" />
+  <remove-project name="LineageOS/android_hardware_qcom_audio" />
+  <remove-project name="LineageOS/android_hardware_qcom_bt" />
+  <remove-project name="LineageOS/android_hardware_qcom_gps" />
+  <!-- msm8994 display and msm8974 media were dropped from LineageOS 22.2; Ultra-Legacy-Hippeastrum keeps them. -->
+  <remove-project name="LineageOS/android_hardware_qcom_display" path="hardware/qcom/display" />
+  <remove-project name="LineageOS/android_hardware_qcom_media" path="hardware/qcom/media" />
+
+  <project path="build/soong" name="android_build_soong" remote="rthery" revision="4c6a0dda527c1f19deaa3b5cba542feb0f2fa195" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk,tradefed,sysui-studio" >
+    <linkfile src="root.bp" dest="Android.bp" />
+    <linkfile src="bootstrap.bash" dest="bootstrap.bash" />
+  </project>
+  <project path="frameworks/av" name="android_frameworks_av" remote="rthery" revision="f4a0235454b33a812196165022d4e03c3d43b629" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk" />
+  <project path="frameworks/base" name="android_frameworks_base" remote="rthery" revision="609e30c38e487a59fb94635661825ad02c6bda05" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk-cw-fs,pdk-fs,sysui-studio" />
+  <project path="frameworks/opt/telephony" name="android_frameworks_opt_telephony" remote="rthery" revision="7fbb8be00f6a63f7ff448cc93c7e65304079790a" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk" />
+  <project path="hardware/interfaces" name="android_hardware_interfaces" remote="rthery" revision="03d829a9006e1de3e14633524c58c6269f022658" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk,sysui-studio" />
+  <project path="hardware/lineage/interfaces" name="android_hardware_lineage_interfaces" remote="rthery" revision="f07853ec943f7cf0ac83a59842337c9238a93973" upstream="refs/heads/lineage-22.2-bullhead" />
+  <project path="hardware/qcom/audio" name="android_hardware_qcom_audio" remote="rthery" revision="844d1b258996e7459167fe658020547da415075d" upstream="refs/heads/lineage-22.2-bullhead" groups="qcom,qcom_audio,pdk-qcom" />
+  <project path="hardware/qcom/bt" name="android_hardware_qcom_bt" remote="rthery" revision="629934c6d0c795207b5d32f9859146edd9e2653e" upstream="refs/heads/lineage-22.2-bullhead" groups="qcom,pdk-qcom" />
+  <project path="hardware/qcom/gps" name="android_hardware_qcom_gps" remote="rthery" revision="0f81e065f760356be346345b962e657f59d9471d" upstream="refs/heads/lineage-22.2-bullhead" groups="qcom,qcom_gps,pdk-qcom" />
+  <project path="hardware/qcom/display" name="Ultra-Legacy-Hippeastrum/android_hardware_qcom_display" remote="github" revision="22c917d9f36c48e252d05910faf81e23fa9677a8" upstream="refs/heads/lineage-22.2" groups="qcom,qcom_display,pdk-qcom" />
+  <project path="hardware/qcom/media" name="Ultra-Legacy-Hippeastrum/android_hardware_qcom_media" remote="github" revision="be72de4fa4be75a20794c4b0d5beab982eb95bb5" upstream="refs/heads/lineage-22.2" groups="qcom,pdk-qcom" />
+  <project path="hardware/sony/timekeep" name="android_hardware_sony_timekeep" remote="rthery" revision="e19d9cda29cdc1fd67ee8d266555a9cdb84e83af" upstream="refs/heads/lineage-22.2-bullhead" />
+
+  <project path="device/lge/bullhead" name="android_device_lge_bullhead" remote="rthery" revision="d4a9a7ea4eaa80c0bcd114b52ebbdd807f2c2251" upstream="refs/heads/lineage-22.2-bullhead" />
+  <project path="kernel/lge/bullhead" name="android_kernel_lge_bullhead" remote="rthery" revision="0c842cbdcf60536391e17816344d7169da921b68" upstream="refs/heads/lineage-22.2-bullhead" />
+  <project path="vendor/lge/bullhead" name="nexus5x-dev/vendor_lge_bullhead" remote="github" revision="3bce2e142f622a354ae248214e31b6b4424fdfef" upstream="refs/heads/lineage-20.0" />
+</manifest>
