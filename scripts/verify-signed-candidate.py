@@ -55,6 +55,8 @@ if meta.get('ota-type')!='BLOCK':fail('not a block OTA')
 script=z.read('META-INF/com/google/android/updater-script').decode()
 targets=sorted({t.rsplit('/',1)[-1] for t in re.findall(r'/dev/block/[\w/.-]+',script)})
 if targets!=['boot','system']:fail(f'updater-script writes {targets}')
+backups=re.findall(r'run_program\("/tmp/install/bin/backuptool\.sh", "(backup|restore)"',script)
+if ':user/' not in expected and backups!=['backup','restore']:fail(f'updater-script runs backuptool {backups}, so addon.d (GApps) would be lost')
 
 signed=zipfile.ZipFile(a.signed/'signed-target-files.zip')
 names=set(signed.namelist())
@@ -84,7 +86,7 @@ if prints!={expected}:fail(f'fingerprints {sorted(prints)}')
 result={'build_run':info['run'],'target_files':info['target_files'],'target_files_sha256':info['target_files_sha256'],
  'ota':ota.name,'ota_sha256':ota_sha,'ota_bytes':ota.stat().st_size,'toolchain':pin['toolchain'],
  'check_ota_package_signature':'Whole package signature VERIFIED (pinned arm64 runtime)','post_build':expected,
- 'post_timestamp':int(meta.get('post-timestamp','0')),'ota_type':'BLOCK','updater_script_targets':targets,
+ 'post_timestamp':int(meta.get('post-timestamp','0')),'ota_type':'BLOCK','updater_script_targets':targets,'addon_d_backup':bool(backups),
  'radio_entries':0,'mac_permissions_test_certs_left':0,'recovery_copies':'match','verified_by':'scripts/verify-signed-candidate.py'}
 (a.signed/'independent-verification.json').write_text(json.dumps(result,indent=1)+'\n')
 print(f'Verified {ota.name} {ota_sha}')

@@ -167,8 +167,12 @@ def main():
      with zipfile.ZipFile(io.BytesIO(z.read(name))) as certs:
       actual=sorted(subprocess.check_output(['openssl','x509','-outform','DER'],input=certs.read(entry)) for entry in certs.namelist())
      if actual!=wanted:raise RuntimeError('OTA trust roots mismatch in '+name)
+    # Like the build's own OTA rule: addon.d scripts (GApps, microG) survive updates of non-user builds.
+    build_type=re.search(r'^ro\.build\.type=(\w+)$',z.read('SYSTEM/build.prop').decode(),re.M)
+   if not build_type:raise RuntimeError('No ro.build.type in SYSTEM/build.prop')
+   backup=['--backup','true'] if build_type[1]!='user' else []
    stage('Building and signing the OTA package')
-   run_logged(['/otatools/bin/ota_from_target_files','-p','/otatools',*jni,'-s','/device/releasetools.py','-k',releasekey,'/signed/signed-target-files.zip','/signed/local-candidate.zip'],env)
+   run_logged(['/otatools/bin/ota_from_target_files','-p','/otatools',*jni,*backup,'-s','/device/releasetools.py','-k',releasekey,'/signed/signed-target-files.zip','/signed/local-candidate.zip'],env)
    with open('/signed/local-candidate.zip','rb') as source:digest=hashlib.file_digest(source,'sha256').hexdigest()
    pathlib.Path('/signed/local-candidate.zip.sha256').write_text(digest+'  local-candidate.zip\n')
    print('Local candidate signed; OTA trust stores checked. Not installed, runtime tested or approved for publication.')
