@@ -1,0 +1,16 @@
+[
+ {
+  "tree": "lineage-22.2",
+  "device": "bullhead",
+  "phone": "Nexus 5X",
+  "tag": "22.2-20261102-UNOFFICIAL-bullhead",
+  "tested": "2026-11-03",
+  "build_run": "41491951320",
+  "counts": {
+   "Works": 38,
+   "Works with limits": 2,
+   "Doesn't work": 0,
+   "Not tested": 1
+  }
+ }
+]
