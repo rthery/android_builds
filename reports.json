@@ -3,9 +3,9 @@
   "tree": "lineage-22.2",
   "device": "bullhead",
   "phone": "Nexus 5X",
-  "tag": "22.2-20261102-UNOFFICIAL-bullhead",
+  "tag": "22.2-20261103-UNOFFICIAL-bullhead",
   "tested": "2026-11-03",
-  "build_run": "41491951320",
+  "build_run": "41702337375",
   "counts": {
    "Works": 38,
    "Works with limits": 2,
