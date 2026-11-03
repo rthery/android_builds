@@ -9,7 +9,7 @@ provenance files, and replace the feed asset when asked. In promote mode it
 only checks that the release already holds this package, marks it as the
 latest release and replaces the feed asset.
 """
-import argparse,hashlib,json,os,pathlib,shutil,subprocess,sys,time,urllib.error,urllib.parse,urllib.request
+import argparse,hashlib,json,os,pathlib,shutil,subprocess,sys,time,urllib.error,urllib.parse,urllib.request,zipfile
 
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('device');p.add_argument('mode',choices=('publish','promote'));p.add_argument('tree')
@@ -73,6 +73,11 @@ def prepare():
  shutil.copyfile(package,publish_dir/name)
  if sha256(publish_dir/name)!=check['ota_sha256']:fail('package copy differs')
  for extra in ('resolved.xml','release.json','vendor-tree.txt'):shutil.copyfile(release_dir/extra,publish_dir/extra)
+ # A first install needs this recovery; verify-signed-candidate.py checked it matches the copy the package installs.
+ recovery=publish_dir/name.replace('.zip','-recovery.img')
+ with zipfile.ZipFile(signed_dir/'signed-target-files.zip') as signed:recovery.write_bytes(signed.read('IMAGES/recovery.img'))
+ recovery.with_name(recovery.name+'.sha256').write_text(f'{sha256(recovery)}  {recovery.name}\n')
+ output('recovery',recovery)
  changes=changelog(info['lineage_version'])
  run_url=lambda run:f'{server}/{repository}/actions/runs/{run}'
  runs=(f'[Build and release run]({run_url(a.build_run)})' if a.build_run==env['GITHUB_RUN_ID']
@@ -151,7 +156,9 @@ def upload():
   release=api('POST',f'https://api.github.com/repos/{repository}/releases',token,{
    'tag_name':tag,'target_commitish':env['GITHUB_SHA'],'name':f'{tag} ({a.device})','body':(publish_dir/'notes.md').read_text(),
    'prerelease':a.update_feed!='true','make_latest':'true' if a.update_feed=='true' else 'false'})
- for path in (publish_dir/name,publish_dir/(name+'.sha256'),publish_dir/'resolved.xml',publish_dir/'release.json',publish_dir/'vendor-tree.txt'):
+ recovery=publish_dir/name.replace('.zip','-recovery.img')
+ for path in (publish_dir/name,publish_dir/(name+'.sha256'),recovery,recovery.with_name(recovery.name+'.sha256'),
+  publish_dir/'resolved.xml',publish_dir/'release.json',publish_dir/'vendor-tree.txt'):
   upload_asset(release,path,token)
  print('Release:',release['html_url'])
  output('release_url',release['html_url'])

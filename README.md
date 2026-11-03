@@ -4,10 +4,12 @@ Device-specific build manifests and compatibility fixes for /e/OS and LineageOS.
 
 ## Devices
 
-| Device | Version | Build instructions | Status | Manifest |
-| --- | --- | --- | --- | --- |
-| Nexus 5X (`bullhead`) | /e/OS 4.4, Android 13 | [Build](devices/bullhead/README.md) | [Status](devices/bullhead/STATUS.md) | [Manifest](devices/bullhead/manifest.xml) |
-| Nexus 5X (`bullhead`) | LineageOS 22.2, Android 15 (unofficial) | [Build](devices/bullhead/lineage-22.2/README.md) | | [Local manifest](devices/bullhead/lineage-22.2/bullhead.xml) |
+To install a ROM, follow the **Install** link for your device. The rest of this page is for people who build the ROMs.
+
+| Device | Version | Install and update | Build instructions | Status | Manifest |
+| --- | --- | --- | --- | --- | --- |
+| Nexus 5X (`bullhead`) | /e/OS 4.4, Android 13 | | [Build](devices/bullhead/README.md) | [Status](devices/bullhead/STATUS.md) | [Manifest](devices/bullhead/manifest.xml) |
+| Nexus 5X (`bullhead`) | LineageOS 22.2, Android 15 (unofficial) | [Install](devices/bullhead/lineage-22.2/INSTALL.md) | [Build](devices/bullhead/lineage-22.2/README.md) | | [Local manifest](devices/bullhead/lineage-22.2/bullhead.xml) |
 
 Select the device manifest when initializing an Android source checkout. For example:
 
