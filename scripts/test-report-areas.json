@@ -1,0 +1,70 @@
+{
+ "Calls and SIM": {
+  "hw.ril.calls": "Phone calls and mobile data",
+  "hw.audio.incall": "In-call audio and speakerphone",
+  "qa.messaging": "SMS and MMS",
+  "qa.ims": "VoLTE calls",
+  "qa.vowifi": "Wi-Fi calling",
+  "hw.ril.emergency.sim": "Emergency calls with a SIM",
+  "hw.ril.emergency.nosim": "Emergency calls without a SIM",
+  "qa.multisim": "Dual SIM and eSIM"
+ },
+ "Network": {
+  "hw.wifi.works": "Wi-Fi",
+  "hw.wifi.tether": "Wi-Fi hotspot",
+  "hw.usb.tether": "USB tethering",
+  "hw.bt.tether": "Bluetooth tethering"
+ },
+ "Audio": {
+  "hw.audio.media": "Media playback",
+  "hw.audio.outputs": "Headphone jack, USB-C and Bluetooth audio",
+  "hw.audio.extras": "Microphones and echo cancellation",
+  "hw.audio.fm": "FM radio"
+ },
+ "Bluetooth": {
+  "hw.bt.works": "Bluetooth",
+  "hw.bt.aptx": "Bluetooth audio codecs"
+ },
+ "Camera and video": {
+  "hw.camera.frontrear": "Front and rear cameras",
+  "hw.video": "Video recording",
+  "hw.codecs": "Hardware video decoding and encoding"
+ },
+ "Display and touch": {
+  "hw.display.resolution": "Screen at its native resolution",
+  "qa.multitouch": "Multitouch",
+  "sw.livedisplay": "LiveDisplay color adjustment"
+ },
+ "Sensors and location": {
+  "hw.sensors.core": "Accelerometer, gyroscope, proximity and light sensors",
+  "hw.sensors.other": "Other sensors",
+  "hw.gps": "GPS",
+  "hw.fingerprint": "Fingerprint sensor",
+  "hw.nfc": "NFC",
+  "hw.ir": "IR blaster"
+ },
+ "Storage and USB": {
+  "hw.usb.mtp": "USB file transfer (MTP)",
+  "qa.usb.otg": "USB OTG storage and Ethernet adapters",
+  "hw.sd": "SD card",
+  "hw.sd.adoptable": "Adoptable storage"
+ },
+ "Battery and charging": {
+  "qa.battery.capacity": "Battery capacity reading",
+  "qa.charging.offmode": "Charging while the phone is off",
+  "qa.charging.cables": "Charging with USB-A and USB-C cables",
+  "qol.stability": "Stability and battery life"
+ },
+ "Security": {
+  "sw.selinux": "SELinux enforcing",
+  "hw.crypto.forced": "Storage encrypted by default",
+  "hw.crypto.hardware": "Hardware-backed encryption",
+  "sw.frp": "Factory reset protection"
+ },
+ "Updates and recovery": {
+  "sw.updater": "Updates through the Updater app",
+  "qol.recovery": "LineageOS Recovery",
+  "qol.addons": "Add-ons in recovery",
+  "qa.factoryreset": "Factory reset"
+ }
+}

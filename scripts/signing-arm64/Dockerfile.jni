@@ -1,0 +1,5 @@
+# Builds libconscrypt_openjdk_jni for linux-arm64; run with --network none.
+FROM ubuntu@sha256:68ee22004a9109b44973313b02ff7b1de250f1de0f5ecb628d73f579aaff33ac
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends cmake ninja-build g++ openjdk-21-jdk-headless \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
