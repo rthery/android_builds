@@ -1,23 +1,16 @@
 # Android builds
 
-Device-specific build manifests and compatibility fixes for /e/OS and LineageOS.
+Device-specific build manifests and compatibility fixes for LineageOS.
 
 ## Devices
 
 To install a ROM, follow the **Install** link for your device. The rest of this page is for people who build the ROMs.
 
-| Device | Version | Install and update | Build instructions | Status | Manifest |
-| --- | --- | --- | --- | --- | --- |
-| Nexus 5X (`bullhead`) | /e/OS 4.4, Android 13 | | [Build](devices/bullhead/README.md) | [Status](devices/bullhead/STATUS.md) | [Manifest](devices/bullhead/manifest.xml) |
-| Nexus 5X (`bullhead`) | LineageOS 22.2, Android 15 (unofficial) | [Install](devices/bullhead/lineage-22.2/INSTALL.md) | [Build](devices/bullhead/lineage-22.2/README.md) | | [Local manifest](devices/bullhead/lineage-22.2/bullhead.xml) |
+| Device | Version | Install and update | Build instructions | Manifest |
+| --- | --- | --- | --- | --- |
+| Nexus 5X (`bullhead`) | LineageOS 22.2, Android 15 (unofficial) | [Install](devices/bullhead/lineage-22.2/INSTALL.md) | [Build](devices/bullhead/lineage-22.2/README.md) | [Local manifest](devices/bullhead/lineage-22.2/bullhead.xml) |
 
-Select the device manifest when initializing an Android source checkout. For example:
-
-```bash
-repo init -u https://github.com/rthery/android_builds.git -b main -m devices/bullhead/manifest.xml --git-lfs -g 'default,-darwin'
-```
-
-Each `devices/<codename>/` directory contains its manifest, build instructions, device status and any device-specific build files. Manifests pin exact source commits. There is no default device.
+Builds start from the LineageOS manifest plus the device's local manifest, which pins every changed project to an exact commit; the build instructions show the steps. Each `devices/<codename>/<version>/` directory holds that local manifest, the build and install instructions and the release notes.
 
 See [repository organization](docs/REPOSITORIES.md) for component sources and adding devices.
 
