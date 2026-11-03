@@ -8,9 +8,7 @@ Choose a device codename, a source tree and one operation:
 
 - `verify` checks the requested recipe and environment without compiling.
 - `development` (`eos-t` only) uses the existing Android source checkout and output directory.
-- `release` (trees whose `build.conf` sets `BUILD_RELEASE_ALLOWED=1`, today `lineage-22.2`) builds a release target-files from the pinned public sources and attests it.
-- `publish` takes the run id of a `release` build, checks the package the maintainer signed from it, attests the package and uploads it.
-- `promote` takes the same run id once that release is out as a prerelease, checks the release holds the same package, marks it as the latest release and replaces the Updater feed asset.
+- `release` (trees whose `build.conf` sets `BUILD_RELEASE_ALLOWED=1`, today `lineage-22.2`) runs three jobs: `build` builds a release target-files from the pinned public sources and attests it; `testing` waits for the `testing` environment, then publishes the signed package as a prerelease; `release` waits for the `release` environment, then marks it as the latest release and updates the Updater feed.
 
 The `eos-t` tree reads `devices/<codename>/build.conf`; any other tree reads `devices/<codename>/<tree>/build.conf`. Source provisioning is manual; the workflow never syncs or replaces a shared tree. `release-candidate` stays refused for `eos-t`.
 
@@ -27,15 +25,17 @@ Builds reuse the shared `out/` and compiler cache (incremental, `installclean` f
 
 ### Signing and publishing
 
-Release keys never reach the runner. The maintainer signs on the host, from the workspace root:
+Release keys never reach the runner or GitHub. From the workspace root the maintainer runs:
 
 ```bash
-bash public/android_builds/scripts/sign-local-candidate.sh "$PWD/zips/ci/<run id>/<target-files>.zip" "$PWD/zips/ci-signed/<run id>"
+bash public/android_builds/scripts/release.sh bullhead lineage-22.2
 ```
 
-and writes `independent-verification.json` there after the usual checks and device test. A `publish` run with `build_run=<run id>` then refuses the package unless the signing report's input hash equals the attested target-files hash, the verification file covers this package, and its whole-file signature verifies against `devices/<codename>/<tree>/releasekey.x509.pem`. It attests the package, creates the release in this repository with notes linking both runs, uploads the package, its checksum, `resolved.xml`, `release.json` and `vendor-tree.txt`, and replaces the Updater feed asset only when `update_feed` is set and the tree defines `BUILD_FEED_ASSET`. Uploads use the job's `GITHUB_TOKEN`; the publish job alone gets contents write.
+It asks for the key passwords first and checks them against the key files, starts the `release` run, waits for its build job, signs the target-files on the host (`sign-local-candidate.sh`), checks the package with `verify-signed-candidate.py` (which writes `independent-verification.json`), and approves the run's `testing` environment. The passwords only live in that process and are dropped once signing is done; stopping it publishes nothing.
 
-A release published without `update_feed` stays a prerelease that the Updater does not offer. To offer it later, run `promote` with the same `build_run`: it repeats the package checks, refuses a release whose package or checksum differs, and only changes the prerelease flag and the feed. It adds no attestation, since the package keeps the one from its publish run.
+The `testing` job refuses the package unless the signing report's input hash equals the attested target-files hash, the verification file covers this package, and its whole-file signature verifies against `devices/<codename>/<tree>/releasekey.x509.pem`. It attests the package and creates a prerelease with the release's section of `devices/<codename>/<tree>/CHANGELOG.md` (required) and the package, its checksum, `resolved.xml`, `release.json` and `vendor-tree.txt`. The Updater is not offered a prerelease.
+
+After the OTA test on a phone, the maintainer approves the `release` environment on the run page. That job repeats the package checks, refuses a release whose package or checksum differs, marks it as the latest release and replaces the feed asset named by `BUILD_FEED_ASSET`. Both environments require the maintainer's approval; a run can wait up to 30 days for each. Uploads use the job's `GITHUB_TOKEN`; only the two publishing jobs get contents write.
 
 ### Test reports
 
@@ -49,7 +49,7 @@ python3 scripts/publish-test-report.py <export dir> <test-reports checkout> --re
 
 The page depends only on these inputs and `scripts/test-report-areas.json`, so the same export always gives the same page. The phone, codename and tree come from the report and `release.json`. The script refuses an export that still contains such identifiers or any value from the private values file, and one whose fingerprint is not the release's, and rewrites the index. Commit and push the branch normally; a page is updated by new commits as testing continues, never by rewriting the branch, since rewritten commits stay fetchable on GitHub.
 
-Anyone can check a package with `gh attestation verify <package>.zip -R rthery/android_builds`. The attestation shows the publish run and recipe commit; the release notes link the build run, whose attestation covers the target-files hash. The runner is the maintainer's machine, so this shows which run built and published a file from which public sources, not an independent rebuild.
+Anyone can check a package with `gh attestation verify <package>.zip -R rthery/android_builds`. The package attestation and the target-files attestation both name the same run and recipe commit, which the release notes link. The runner is the maintainer's machine, so this shows which run built and published a file from which public sources, not an independent rebuild.
 
 ## Runner setup
 

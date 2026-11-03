@@ -55,7 +55,8 @@ if [[ "$mode" == release ]]; then
   # The tree's own launcher matches its repo version; the image ships an older one.
   .repo/repo/repo manifest -r -o "$release_dir/resolved.xml"
   python3 -I "$recipe/scripts/check-tree-pins.py" "$release_dir/resolved.xml" "$config_dir/$BUILD_RECIPE_MANIFEST" \
-    --tree "$source_dir" --branch "$BUILD_MANIFEST_BRANCH" --generated "$BUILD_VENDOR_PATH"
+    --tree "$source_dir" --branch "$BUILD_MANIFEST_BRANCH" --generated "$BUILD_VENDOR_PATH" \
+    --overlay "prebuilts/build-tools/linux-x86/bin/ckati=$recipe/scripts/ckati-native.sh"
   blobs_revision=$(python3 -I -c 'import sys, xml.etree.ElementTree as E
 print(next(p.get("revision") for p in E.parse(sys.argv[1]).iter("project") if p.get("path") == sys.argv[2]))' \
     "$config_dir/$BUILD_RECIPE_MANIFEST" "$BUILD_VENDOR_PATH")

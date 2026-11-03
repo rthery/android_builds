@@ -23,7 +23,8 @@ config=recipe/'devices'/a.device/a.tree
 env=os.environ
 release_dir=pathlib.Path('/work/zips/ci')/a.build_run
 signed_dir=pathlib.Path('/work/zips/ci-signed')/a.build_run
-publish_dir=release_dir/('publish-'+env['GITHUB_RUN_ID'])
+# The testing and release jobs of one run each prepare their own copy.
+publish_dir=release_dir/f"publish-{env['GITHUB_RUN_ID']}-{env.get('GITHUB_JOB','publish')}-{env.get('GITHUB_RUN_ATTEMPT','1')}"
 server,repository=env['GITHUB_SERVER_URL'],env['GITHUB_REPOSITORY']
 conf=dict(line.split('=',1) for line in (config/'build.conf').read_text().splitlines() if line[:1].isupper() and '=' in line)
 
@@ -73,10 +74,13 @@ def prepare():
  if sha256(publish_dir/name)!=check['ota_sha256']:fail('package copy differs')
  for extra in ('resolved.xml','release.json','vendor-tree.txt'):shutil.copyfile(release_dir/extra,publish_dir/extra)
  changes=changelog(info['lineage_version'])
+ run_url=lambda run:f'{server}/{repository}/actions/runs/{run}'
+ runs=(f'[Build and release run]({run_url(a.build_run)})' if a.build_run==env['GITHUB_RUN_ID']
+  else f'[Build run]({run_url(a.build_run)}) · [Publish run]({run_url(env["GITHUB_RUN_ID"])})')
  (publish_dir/'notes.md').write_text(f"""LineageOS {info['lineage_version'].split('-')[0]} for the Nexus 5X ({a.device}).
 
 - Test report: https://{repository.split('/')[0]}.github.io/{repository.split('/')[1]}/{a.tree}/{info['lineage_version']}/
-- [Build run]({server}/{repository}/actions/runs/{a.build_run}) · [Publish run]({server}/{repository}/actions/runs/{env['GITHUB_RUN_ID']})
+- {runs}
 - Security patch: {info['security_patch']}
 
 ## Changes
@@ -114,6 +118,7 @@ def promote(release,name,token):
  if published!=expected:fail(f'{name}.sha256 on the release names another package')
  api('PATCH',release['url'],token,{'prerelease':False,'make_latest':'true'})
  print('Promoted:',release['html_url'])
+ output('release_url',release['html_url'])
 
 def upload():
  info=json.loads((publish_dir/'release.json').read_text())
@@ -132,6 +137,7 @@ def upload():
  for path in (publish_dir/name,publish_dir/(name+'.sha256'),publish_dir/'resolved.xml',publish_dir/'release.json',publish_dir/'vendor-tree.txt'):
   upload_asset(release,path,token)
  print('Release:',release['html_url'])
+ output('release_url',release['html_url'])
  if a.update_feed=='true':update_feed(info,token)
 
 def update_feed(info,token):

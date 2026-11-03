@@ -23,30 +23,19 @@ on:
           - verify
           - development
           - release
-          - publish
-          - promote
-      build_run:
-        description: For publish and promote, the run id of the release build
-        required: false
-        type: string
-      update_feed:
-        description: For publish, also replace the Updater feed asset (promote always does)
-        required: false
-        type: boolean
-        default: false
 
 permissions:
   contents: read
 
-concurrency:
-  group: rom-builder
-  cancel-in-progress: false
-
 jobs:
   build:
-    if: github.actor == 'rthery' && github.triggering_actor == 'rthery' && github.ref == 'refs/heads/main' && inputs.mode != 'publish' && inputs.mode != 'promote'
+    if: github.actor == 'rthery' && github.triggering_actor == 'rthery' && github.ref == 'refs/heads/main'
     runs-on: [self-hosted, Linux, X64, rom-builder]
     timeout-minutes: 1440
+    # Only the build shares the source tree; release runs waiting for approval do not hold it.
+    concurrency:
+      group: rom-builder
+      cancel-in-progress: false
     permissions:
       contents: read
       id-token: write
@@ -87,10 +76,16 @@ jobs:
         with:
           subject-path: ${{ steps.build.outputs.target_files }}
 
-  publish:
-    if: github.actor == 'rthery' && github.triggering_actor == 'rthery' && github.ref == 'refs/heads/main' && (inputs.mode == 'publish' || inputs.mode == 'promote')
+  # Waits for the maintainer: the package is signed locally (scripts/release.sh), then the
+  # testing environment is approved and the release goes up as a prerelease.
+  testing:
+    needs: build
+    if: inputs.mode == 'release'
     runs-on: [self-hosted, Linux, X64, rom-builder]
     timeout-minutes: 120
+    environment:
+      name: testing
+      url: ${{ steps.upload.outputs.release_url }}
     permissions:
       contents: write
       id-token: write
@@ -107,11 +102,7 @@ jobs:
         run: |
           set -euo pipefail
           git init .
-          if git remote get-url origin >/dev/null 2>&1; then
-            git remote set-url origin "${SERVER_URL}/${REPOSITORY}.git"
-          else
-            git remote add origin "${SERVER_URL}/${REPOSITORY}.git"
-          fi
+          git remote add origin "${SERVER_URL}/${REPOSITORY}.git"
           git fetch --depth=1 origin "$SOURCE_SHA"
           git checkout --force --detach FETCH_HEAD
 
@@ -120,28 +111,65 @@ jobs:
         env:
           DEVICE: ${{ inputs.device }}
           TREE: ${{ inputs.tree }}
-          MODE: ${{ inputs.mode }}
-          BUILD_RUN: ${{ inputs.build_run }}
-          UPDATE_FEED: ${{ inputs.update_feed }}
         run: |
           set -euo pipefail
-          bash ./scripts/ci-build.sh "$DEVICE" "$MODE" "$TREE" prepare "$BUILD_RUN" "$UPDATE_FEED"
+          bash ./scripts/ci-build.sh "$DEVICE" publish "$TREE" prepare "$GITHUB_RUN_ID" false
 
-      # A promoted release keeps the attestation of the run that published it.
       - name: Attest the package
-        if: inputs.mode == 'publish'
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
         with:
           subject-path: ${{ steps.prepare.outputs.package }}
 
-      - name: Upload the release
+      - name: Publish the prerelease
+        id: upload
         env:
           DEVICE: ${{ inputs.device }}
           TREE: ${{ inputs.tree }}
-          MODE: ${{ inputs.mode }}
-          BUILD_RUN: ${{ inputs.build_run }}
-          UPDATE_FEED: ${{ inputs.update_feed }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          bash ./scripts/ci-build.sh "$DEVICE" "$MODE" "$TREE" upload "$BUILD_RUN" "$UPDATE_FEED"
+          bash ./scripts/ci-build.sh "$DEVICE" publish "$TREE" upload "$GITHUB_RUN_ID" false
+
+  # Approved after the OTA test on a phone: marks the release as latest and offers it in the Updater.
+  release:
+    needs: testing
+    runs-on: [self-hosted, Linux, X64, rom-builder]
+    timeout-minutes: 120
+    environment:
+      name: release
+      url: ${{ steps.upload.outputs.release_url }}
+    permissions:
+      contents: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out the exact workflow revision
+        env:
+          REPOSITORY: ${{ github.repository }}
+          SERVER_URL: ${{ github.server_url }}
+          SOURCE_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          git init .
+          git remote add origin "${SERVER_URL}/${REPOSITORY}.git"
+          git fetch --depth=1 origin "$SOURCE_SHA"
+          git checkout --force --detach FETCH_HEAD
+
+      - name: Check the published package
+        env:
+          DEVICE: ${{ inputs.device }}
+          TREE: ${{ inputs.tree }}
+        run: |
+          set -euo pipefail
+          bash ./scripts/ci-build.sh "$DEVICE" promote "$TREE" prepare "$GITHUB_RUN_ID" true
+
+      - name: Mark as latest and update the feed
+        id: upload
+        env:
+          DEVICE: ${{ inputs.device }}
+          TREE: ${{ inputs.tree }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          bash ./scripts/ci-build.sh "$DEVICE" promote "$TREE" upload "$GITHUB_RUN_ID" true

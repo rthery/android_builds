@@ -9,6 +9,7 @@ p.add_argument('--jobs',type=int,default=4)
 # Linux packaging runtime: arm64 runs Java natively (pinned image and Conscrypt JNI), amd64 is the previous all-Rosetta image.
 p.add_argument('--runtime',choices=('arm64','amd64'),default='arm64')
 p.add_argument('--keys',type=pathlib.Path,help='Key directory (default: the workspace release keys); for throwaway test sets')
+p.add_argument('--passwords-stdin',action='store_true',help='Read the passwords as a JSON object {group: password} from stdin (release.sh)')
 a=p.parse_args();root=pathlib.Path(os.environ.get('ROM_WORKSPACE') or pathlib.Path(__file__).resolve().parents[3]);tools=pathlib.Path(__file__).resolve().parent
 if not a.input.is_absolute() or not a.input.is_file() or not a.output.is_absolute() or a.output.exists():p.error('Existing absolute input and new absolute output directory required')
 if not 1<=a.jobs<=4:p.error('Use between 1 and 4 signing workers')
@@ -50,8 +51,12 @@ locker_image=json.loads((root/'.local/signing-toolchain/runtime-arm64.json').rea
 locker=subprocess.Popen(['docker','run','--rm','-i','--network','none','--user','1000:1000','--cap-drop','ALL','--security-opt','no-new-privileges','--mount',f"type=bind,src={root/'.local/build-lock'},dst=/lock",'--entrypoint','python3',locker_image,'-c',LOCKER],stdin=subprocess.PIPE,stdout=subprocess.PIPE,text=True)
 if locker.stdout.readline().strip()!='locked':sys.exit('Another build holds the shared lock')
 # Ask first so the user can leave during the checks; a failed check discards the passwords.
-print(f'Signing profile {profile_name}. Enter the {len(profile["groups"])} signing password(s); input is hidden.',flush=True)
-passwords={group:getpass.getpass(group+' key password (hidden): ') for group in profile['groups']}
+if not a.passwords_stdin:print(f'Signing profile {profile_name}. Enter the {len(profile["groups"])} signing password(s); input is hidden.',flush=True)
+if a.passwords_stdin:
+ given=json.load(sys.stdin)
+ if set(given)!=set(profile['groups']):sys.exit('Passwords on stdin must cover exactly: '+', '.join(profile['groups']))
+ passwords={group:given[group] for group in profile['groups']};given.clear()
+else:passwords={group:getpass.getpass(group+' key password (hidden): ') for group in profile['groups']}
 if not all(passwords.values()):sys.exit('Empty passwords refused')
 if any(value!=value.strip() or any(token in value for token in ('\r','\n','\x00',']]]')) for value in passwords.values()):
  sys.exit('Password cannot be represented safely in Android password-file format')
