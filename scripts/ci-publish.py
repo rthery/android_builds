@@ -174,16 +174,23 @@ def upload():
    raise
   update_feed(info,token);return
  # The release points at the recipe commit that built the package, also when a publish run redoes it.
+ # The job token cannot point a ref at a commit whose workflows differ from main's: a publish run needs the tag made beforehand.
+ try:tagged=api('GET',f'https://api.github.com/repos/{repository}/git/ref/tags/{tag}',token)['object']['sha']
+ except urllib.error.HTTPError as error:
+  if error.code!=404:raise
+  tagged=None
+ if tagged not in (None,info['commit']):fail(f'tag {tag} points at {tagged}, not {info["commit"]}')
  drafts=[r for r in api('GET',f'https://api.github.com/repos/{repository}/releases?per_page=30',token) if r['draft'] and r['tag_name']==tag]
  try:
   release=drafts[0] if drafts else api('GET',f'https://api.github.com/repos/{repository}/releases/tags/{tag}',token)
-  if release['target_commitish']!=info['commit']:fail(f'release {tag} exists for another commit')
+  if not tagged and release['target_commitish']!=info['commit']:fail(f'release {tag} exists for another commit')
  except urllib.error.HTTPError as error:
   if error.code!=404:raise
+  if tagged is None and info['commit']!=env['GITHUB_SHA']:fail(f'create tag {tag} at {info["commit"]} first')
   # Created as a draft and published once every asset is up, so nobody sees an empty release.
   release=api('POST',f'https://api.github.com/repos/{repository}/releases',token,{
-   'tag_name':tag,'target_commitish':info['commit'],'name':f'{tag} ({a.device})','body':(publish_dir/'notes.md').read_text(),
-   'draft':True,'prerelease':a.update_feed!='true'})
+   'tag_name':tag,'name':f'{tag} ({a.device})','body':(publish_dir/'notes.md').read_text(),
+   'draft':True,'prerelease':a.update_feed!='true',**({} if tagged else {'target_commitish':info['commit']})})
  recovery=publish_dir/name.replace('.zip','-recovery.img')
  for path in (publish_dir/name,publish_dir/(name+'.sha256'),recovery,recovery.with_name(recovery.name+'.sha256'),
   publish_dir/'resolved.xml',publish_dir/'release.json',publish_dir/'vendor-tree.txt'):
