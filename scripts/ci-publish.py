@@ -103,8 +103,12 @@ def api(method,url,token,data=None,content_type='application/json'):
   'Authorization':'Bearer '+token,'Accept':'application/vnd.github+json','Content-Type':content_type})
  if isinstance(data,pathlib.Path):
   request.data=data.open('rb');request.add_header('Content-Length',str(data.stat().st_size))
- with urllib.request.urlopen(request) as response:
-  text=response.read()
+ try:
+  with urllib.request.urlopen(request) as response:
+   text=response.read()
+ except urllib.error.HTTPError as error:
+  if error.code!=404:print(f'{method} {url}: HTTP {error.code} {error.read().decode(errors="replace")[:500]}',file=sys.stderr)
+  raise
  return json.loads(text) if text else None
 
 def send_asset(url,path,token):
