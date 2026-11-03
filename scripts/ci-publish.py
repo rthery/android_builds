@@ -9,7 +9,7 @@ provenance files, and replace the feed asset when asked. In promote mode it
 only checks that the release already holds this package, marks it as the
 latest release and replaces the feed asset.
 """
-import argparse,hashlib,json,os,pathlib,shutil,subprocess,sys,time,urllib.error,urllib.parse,urllib.request,zipfile
+import argparse,hashlib,http.client,json,os,pathlib,shutil,subprocess,sys,time,urllib.error,urllib.parse,urllib.request,zipfile
 
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('device');p.add_argument('mode',choices=('publish','promote'));p.add_argument('tree')
@@ -107,6 +107,27 @@ def api(method,url,token,data=None,content_type='application/json'):
   text=response.read()
  return json.loads(text) if text else None
 
+def send_asset(url,path,token):
+ """Streams one asset and returns GitHub's reply, read even when it closes the upload early."""
+ target=urllib.parse.urlsplit(url)
+ connection=http.client.HTTPSConnection(target.netloc,timeout=600)
+ connection.putrequest('POST',target.path+'?'+target.query)
+ for key,value in (('Authorization','Bearer '+token),('Accept','application/vnd.github+json'),
+  ('Content-Type','application/octet-stream'),('Content-Length',str(path.stat().st_size))):connection.putheader(key,value)
+ connection.endheaders()
+ sent,failure=0,None
+ try:
+  with path.open('rb') as f:
+   while chunk:=f.read(1<<20):connection.send(chunk);sent+=len(chunk)
+ except OSError as error:failure=error
+ try:
+  response=connection.getresponse();status,body=response.status,response.read(1000)
+ except (OSError,http.client.HTTPException) as error:status,body=None,repr(error).encode()
+ connection.close()
+ if status==201 and failure is None:return
+ raise ConnectionError(f'upload of {path.name} stopped after {sent} of {path.stat().st_size} bytes: '
+  f'{failure!r}, GitHub replied {status} {body[:500]!r}')
+
 def upload_asset(release,path,token,name=None):
  name=name or path.name
  url=release['upload_url'].split('{')[0]+'?name='+urllib.parse.quote(name)
@@ -117,10 +138,11 @@ def upload_asset(release,path,token,name=None):
     if asset['state']=='uploaded' and asset['size']==path.stat().st_size:return
     api('DELETE',asset['url'],token)
   try:
-   api('POST',url,token,path,'application/octet-stream');return
-  except (urllib.error.URLError,ConnectionError,TimeoutError) as error:
+   send_asset(url,path,token);return
+  except (ConnectionError,TimeoutError,OSError) as error:
+   print(f'Attempt {attempt}: {error}',flush=True)
    if attempt==3:raise
-   print(f'Upload of {name} failed ({error}); retrying',flush=True);time.sleep(30*attempt)
+   time.sleep(30*attempt)
 
 def promote(release,name,token):
  asset=next((x for x in release['assets'] if x['name']==name),None)
@@ -147,19 +169,22 @@ def upload():
    if error.code==404:fail(f'no release {tag} to promote; publish it first')
    raise
   update_feed(info,token);return
+ # The release points at the recipe commit that built the package, also when a publish run redoes it.
+ drafts=[r for r in api('GET',f'https://api.github.com/repos/{repository}/releases?per_page=30',token) if r['draft'] and r['tag_name']==tag]
  try:
-  # A re-run continues the release its first attempt created for the same commit.
-  release=api('GET',f'https://api.github.com/repos/{repository}/releases/tags/{tag}',token)
-  if release['target_commitish']!=env['GITHUB_SHA']:fail(f'release {tag} exists for another commit')
+  release=drafts[0] if drafts else api('GET',f'https://api.github.com/repos/{repository}/releases/tags/{tag}',token)
+  if release['target_commitish']!=info['commit']:fail(f'release {tag} exists for another commit')
  except urllib.error.HTTPError as error:
   if error.code!=404:raise
+  # Created as a draft and published once every asset is up, so nobody sees an empty release.
   release=api('POST',f'https://api.github.com/repos/{repository}/releases',token,{
-   'tag_name':tag,'target_commitish':env['GITHUB_SHA'],'name':f'{tag} ({a.device})','body':(publish_dir/'notes.md').read_text(),
-   'prerelease':a.update_feed!='true','make_latest':'true' if a.update_feed=='true' else 'false'})
+   'tag_name':tag,'target_commitish':info['commit'],'name':f'{tag} ({a.device})','body':(publish_dir/'notes.md').read_text(),
+   'draft':True,'prerelease':a.update_feed!='true'})
  recovery=publish_dir/name.replace('.zip','-recovery.img')
  for path in (publish_dir/name,publish_dir/(name+'.sha256'),recovery,recovery.with_name(recovery.name+'.sha256'),
   publish_dir/'resolved.xml',publish_dir/'release.json',publish_dir/'vendor-tree.txt'):
   upload_asset(release,path,token)
+ release=api('PATCH',release['url'],token,{'draft':False,'prerelease':a.update_feed!='true','make_latest':'true' if a.update_feed=='true' else 'false'})
  print('Release:',release['html_url'])
  output('release_url',release['html_url'])
  if a.update_feed=='true':update_feed(info,token)

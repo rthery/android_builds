@@ -23,13 +23,18 @@ on:
           - verify
           - development
           - release
+          - publish
+      build_run:
+        description: For publish, the id of the release run whose signed build to publish again
+        required: false
+        type: string
 
 permissions:
   contents: read
 
 jobs:
   build:
-    if: github.actor == 'rthery' && github.triggering_actor == 'rthery' && github.ref == 'refs/heads/main'
+    if: github.actor == 'rthery' && github.triggering_actor == 'rthery' && github.ref == 'refs/heads/main' && inputs.mode != 'publish'
     runs-on: [self-hosted, Linux, X64, rom-builder]
     timeout-minutes: 1440
     # Only the build shares the source tree; release runs waiting for approval do not hold it.
@@ -80,7 +85,8 @@ jobs:
   # testing environment is approved and the release goes up as a prerelease.
   testing:
     needs: build
-    if: inputs.mode == 'release'
+    # publish skips the build and takes the signed build of an earlier release run.
+    if: always() && github.actor == 'rthery' && github.triggering_actor == 'rthery' && github.ref == 'refs/heads/main' && ((inputs.mode == 'release' && needs.build.result == 'success') || (inputs.mode == 'publish' && inputs.build_run != ''))
     runs-on: [self-hosted, Linux, X64, rom-builder]
     timeout-minutes: 120
     environment:
@@ -111,9 +117,10 @@ jobs:
         env:
           DEVICE: ${{ inputs.device }}
           TREE: ${{ inputs.tree }}
+          BUILD_RUN: ${{ inputs.mode == 'publish' && inputs.build_run || github.run_id }}
         run: |
           set -euo pipefail
-          bash ./scripts/ci-build.sh "$DEVICE" publish "$TREE" prepare "$GITHUB_RUN_ID" false
+          bash ./scripts/ci-build.sh "$DEVICE" publish "$TREE" prepare "$BUILD_RUN" false
 
       - name: Attest the package
         uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
@@ -127,14 +134,16 @@ jobs:
         env:
           DEVICE: ${{ inputs.device }}
           TREE: ${{ inputs.tree }}
+          BUILD_RUN: ${{ inputs.mode == 'publish' && inputs.build_run || github.run_id }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          bash ./scripts/ci-build.sh "$DEVICE" publish "$TREE" upload "$GITHUB_RUN_ID" false
+          bash ./scripts/ci-build.sh "$DEVICE" publish "$TREE" upload "$BUILD_RUN" false
 
   # Approved after the OTA test on a phone: marks the release as latest and offers it in the Updater.
   release:
     needs: testing
+    if: always() && needs.testing.result == 'success'
     runs-on: [self-hosted, Linux, X64, rom-builder]
     timeout-minutes: 120
     environment:
@@ -162,16 +171,18 @@ jobs:
         env:
           DEVICE: ${{ inputs.device }}
           TREE: ${{ inputs.tree }}
+          BUILD_RUN: ${{ inputs.mode == 'publish' && inputs.build_run || github.run_id }}
         run: |
           set -euo pipefail
-          bash ./scripts/ci-build.sh "$DEVICE" promote "$TREE" prepare "$GITHUB_RUN_ID" true
+          bash ./scripts/ci-build.sh "$DEVICE" promote "$TREE" prepare "$BUILD_RUN" true
 
       - name: Mark as latest and update the feed
         id: upload
         env:
           DEVICE: ${{ inputs.device }}
           TREE: ${{ inputs.tree }}
+          BUILD_RUN: ${{ inputs.mode == 'publish' && inputs.build_run || github.run_id }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          bash ./scripts/ci-build.sh "$DEVICE" promote "$TREE" upload "$GITHUB_RUN_ID" true
+          bash ./scripts/ci-build.sh "$DEVICE" promote "$TREE" upload "$BUILD_RUN" true
