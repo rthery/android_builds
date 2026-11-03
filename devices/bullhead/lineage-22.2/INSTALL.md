@@ -36,7 +36,14 @@ Unofficial build for the LG Nexus 5X (`bullhead`) only.
    adb sideload lineage-22.2-<date>-UNOFFICIAL-bullhead.zip
    ```
 
-6. Choose **Reboot system now**. The first boot takes a few minutes.
+6. Optional: to add Google apps, choose **Apply update > Apply from ADB** again and sideload a GApps package for Android 15 (arm64) before the first boot. MindTheGapps works, but it slows the phone down a lot; skip it if you can.
+7. Choose **Reboot system now**. The first boot takes a few minutes.
+
+## Bootloop of death (BLOD)
+
+If your phone has the bootloop of death, start the recovery, open **Advanced options** and choose **Enable 4-core mode (BLOD)**, then confirm. The two big cores stay off from the next boot; **Settings > About phone** shows the mode. Choose **Disable 4-core mode (BLOD)** to go back.
+
+## Bootloader
 
 Keep the bootloader unlocked: locking it again with this ROM installed stops the phone from booting.
 
@@ -44,7 +51,7 @@ Keep the bootloader unlocked: locking it again with this ROM installed stops the
 
 New releases arrive over the air, with your data kept:
 
-1. When a new release is out, the phone shows a notification. To check yourself, open **Settings > System > Updates** and tap the refresh button.
+1. When a new release is out, the phone shows a notification. To check yourself, open **Settings > System > System updates** and tap the refresh button.
 2. Tap **Download**, then **Install**. The phone reboots to the recovery, installs the update and starts again.
 
-The phone checks for updates once a week by default; you can change that in the Updates screen.
+The phone checks for updates once a week by default; you can change that in the System updates screen.

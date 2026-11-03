@@ -1,4 +1,6 @@
-# Nexus 5X status
+# Nexus 5X status (/e/OS 4.4)
+
+> This status is for the /e/OS 4.4 (Android 13) build; the LineageOS 22.2 test results are linked from each release. For LineageOS 22.2, see [install](lineage-22.2/INSTALL.md) and [build](lineage-22.2/README.md).
 
 Last updated: 2026-10-21. Results are based on manual device testing of /e/OS 4.4 unless stated otherwise.
 

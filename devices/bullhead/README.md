@@ -1,5 +1,7 @@
 # Build /e/OS for Nexus 5X
 
+> This page covers the /e/OS 4.4 (Android 13) build. For LineageOS 22.2, see [install](lineage-22.2/INSTALL.md) and [build](lineage-22.2/README.md).
+
 ## Build environment
 
 Use a Linux amd64 environment with the Android build dependencies, the Android `repo` tool, Git LFS, Java, Python 3 and ccache.

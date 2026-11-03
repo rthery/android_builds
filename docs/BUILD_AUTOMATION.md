@@ -9,6 +9,7 @@ Choose a device codename, a source tree and one operation:
 - `verify` checks the requested recipe and environment without compiling.
 - `development` (`eos-t` only) uses the existing Android source checkout and output directory.
 - `release` (trees whose `build.conf` sets `BUILD_RELEASE_ALLOWED=1`, today `lineage-22.2`) runs three jobs: `build` builds a release target-files from the pinned public sources and attests it; `testing` waits for the `testing` environment, then publishes the signed package as a prerelease; `release` waits for the `release` environment, then marks it as the latest release and updates the Updater feed.
+- `publish` takes the signed package of an earlier `release` run (`build_run`, its run id) and runs the `testing` and `release` jobs again without rebuilding, for example after a failed upload. The release keeps the tag and recipe commit of that build, and its notes link both runs.
 
 The `eos-t` tree reads `devices/<codename>/build.conf`; any other tree reads `devices/<codename>/<tree>/build.conf`. Source provisioning is manual; the workflow never syncs or replaces a shared tree. `release-candidate` stays refused for `eos-t`.
 
@@ -33,7 +34,7 @@ bash public/android_builds/scripts/release.sh bullhead lineage-22.2
 
 It asks for the key passwords first and checks them against the key files, starts the `release` run, waits for its build job, signs the target-files on the host (`sign-local-candidate.sh`), checks the package with `verify-signed-candidate.py` (which writes `independent-verification.json`), and approves the run's `testing` environment. The passwords only live in that process and are dropped once signing is done; stopping it publishes nothing.
 
-The `testing` job refuses the package unless the signing report's input hash equals the attested target-files hash, the verification file covers this package, and its whole-file signature verifies against `devices/<codename>/<tree>/releasekey.x509.pem`. It attests the package and creates a prerelease with the release's section of `devices/<codename>/<tree>/CHANGELOG.md` (required) and the package, its checksum, `resolved.xml`, `release.json` and `vendor-tree.txt`. The Updater is not offered a prerelease.
+The `testing` job refuses the package unless the signing report's input hash equals the attested target-files hash, the verification file covers this package, and its whole-file signature verifies against `devices/<codename>/<tree>/releasekey.x509.pem`. It attests the package and creates a prerelease with the release's section of `devices/<codename>/<tree>/CHANGELOG.md` (required) and the package, the recovery image (`IMAGES/recovery.img` of the signed target-files, needed for a first install), their checksums, `resolved.xml`, `release.json` and `vendor-tree.txt`. The package and the recovery image are both attested. The Updater is not offered a prerelease.
 
 After the OTA test on a phone, the maintainer approves the `release` environment on the run page. That job repeats the package checks, refuses a release whose package or checksum differs, marks it as the latest release and replaces the feed asset named by `BUILD_FEED_ASSET`. Both environments require the maintainer's approval; a run can wait up to 30 days for each. Uploads use the job's `GITHUB_TOKEN`; only the two publishing jobs get contents write.
 
@@ -57,7 +58,7 @@ Each job runs in a fresh `rom-actions-runner` container started by `scripts/star
 
 Extract the official checksum-verified Linux x64 runner into `.local/github-runner-dist` and leave it unconfigured; the script refuses a configured directory. Each container copies it into its own filesystem. Run the script from a terminal session with `gh` signed in as the repository owner (repository administration access is needed to create runner configurations). It stays in the foreground, and the runner is offline while it is stopped. Jobs require the `self-hosted`, `Linux`, `X64` and `rom-builder` labels, which the script sets on each runner.
 
-Only these host paths are bind-mounted, plus the build output volume:
+Only these host paths are bind-mounted, plus the build output volume. The `src/android` and `eos-out-android` rows serve the /e/OS `eos-t` tree, the `lineage-22.2` rows the LineageOS tree:
 
 | Host path under the workspace | Container path | Access |
 | --- | --- | --- |

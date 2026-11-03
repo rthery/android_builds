@@ -22,8 +22,8 @@ repo sync -c -j4 --no-clone-bundle --no-tags --fail-fast
 | `build/make` | The signer re-signs the recovery image kept in system/vendor, so a signed build does not restore a test-key recovery. |
 | `build/soong` | Lets a device turn off the shadow call stack: the 8.1 Adreno blobs use x18 as a scratch register. |
 | `frameworks/av` | MediaDrm reports "not provisioned" for the Oreo Widevine HAL, so apps can provision Widevine. |
-| `frameworks/base` | SystemUI keeps the SIM PIN bouncer visible when a heads-up notification appears (it blinked at boot). |
-| `frameworks/opt/telephony` | Drops WAP push messages whose header length exceeds the message, instead of crashing the phone process. |
+| `frameworks/base` | SystemUI keeps the SIM PIN bouncer visible when a heads-up notification appears (it blinked at boot). The Wi-Fi QR code scanner decodes the right part of the image from the rear camera, which is mounted at 270 degrees. |
+| `frameworks/opt/telephony` | Drops WAP push messages whose header length exceeds the message, instead of crashing the phone process. With a single SIM, the data subscription is announced again when the SIM appears late (hot insert or PIN unlock), so the mobile icon no longer shows "!". |
 | `hardware/interfaces` | Audio service sizes the binder threadpool before starting it. |
 | `hardware/lineage/interfaces` | Restores the legacy Wi-Fi and GNSS HALs (from Ultra-Legacy-Hippeastrum). |
 | `hardware/qcom/audio` | Ultra-Legacy-Hippeastrum base, skips undeclared AIDL power services. |
