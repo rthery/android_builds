@@ -83,13 +83,15 @@ def prepare():
  patch=f"- Security patch level: {info['security_patch']}."
  changes.insert(1 if changes[0].startswith('- Android:') else 0,patch)
  changes='\n'.join(changes)
+ install=(f'- Install and update instructions: {server}/{repository}/blob/main/devices/{a.device}/{a.tree}/INSTALL.md\n'
+  if (config/'INSTALL.md').exists() else '')
  run_url=lambda run:f'{server}/{repository}/actions/runs/{run}'
  runs=(f'[Build and release run]({run_url(a.build_run)})' if a.build_run==env['GITHUB_RUN_ID']
   else f'[Build run]({run_url(a.build_run)}) · [Publish run]({run_url(env["GITHUB_RUN_ID"])})')
  (publish_dir/'notes.md').write_text(f"""LineageOS {info['lineage_version'].split('-')[0]} for the Nexus 5X ({a.device}).
 
 - Test report: https://{repository.split('/')[0]}.github.io/{repository.split('/')[1]}/{a.tree}/{info['lineage_version']}/
-- {runs}
+{install}- {runs}
 
 ## Changes
 
