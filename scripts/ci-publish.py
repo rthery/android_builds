@@ -9,7 +9,7 @@ provenance files, and replace the feed asset when asked. In promote mode it
 only checks that the release already holds this package, marks it as the
 latest release and replaces the feed asset.
 """
-import argparse,hashlib,json,os,pathlib,shutil,subprocess,sys,urllib.error,urllib.parse,urllib.request
+import argparse,hashlib,json,os,pathlib,shutil,subprocess,sys,time,urllib.error,urllib.parse,urllib.request
 
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('device');p.add_argument('mode',choices=('publish','promote'));p.add_argument('tree')
@@ -103,8 +103,19 @@ def api(method,url,token,data=None,content_type='application/json'):
  return json.loads(text) if text else None
 
 def upload_asset(release,path,token,name=None):
- url=release['upload_url'].split('{')[0]+'?name='+urllib.parse.quote(name or path.name)
- api('POST',url,token,path,'application/octet-stream')
+ name=name or path.name
+ url=release['upload_url'].split('{')[0]+'?name='+urllib.parse.quote(name)
+ for attempt in range(1,4):
+  # A dropped upload can leave a partial asset under the name, which blocks the next try.
+  for asset in api('GET',release['url']+'/assets?per_page=100',token):
+   if asset['name']==name:
+    if asset['state']=='uploaded' and asset['size']==path.stat().st_size:return
+    api('DELETE',asset['url'],token)
+  try:
+   api('POST',url,token,path,'application/octet-stream');return
+  except (urllib.error.URLError,ConnectionError,TimeoutError) as error:
+   if attempt==3:raise
+   print(f'Upload of {name} failed ({error}); retrying',flush=True);time.sleep(30*attempt)
 
 def promote(release,name,token):
  asset=next((x for x in release['assets'] if x['name']==name),None)
@@ -131,9 +142,15 @@ def upload():
    if error.code==404:fail(f'no release {tag} to promote; publish it first')
    raise
   update_feed(info,token);return
- release=api('POST',f'https://api.github.com/repos/{repository}/releases',token,{
-  'tag_name':tag,'target_commitish':env['GITHUB_SHA'],'name':f'{tag} ({a.device})','body':(publish_dir/'notes.md').read_text(),
-  'prerelease':a.update_feed!='true','make_latest':'true' if a.update_feed=='true' else 'false'})
+ try:
+  # A re-run continues the release its first attempt created for the same commit.
+  release=api('GET',f'https://api.github.com/repos/{repository}/releases/tags/{tag}',token)
+  if release['target_commitish']!=env['GITHUB_SHA']:fail(f'release {tag} exists for another commit')
+ except urllib.error.HTTPError as error:
+  if error.code!=404:raise
+  release=api('POST',f'https://api.github.com/repos/{repository}/releases',token,{
+   'tag_name':tag,'target_commitish':env['GITHUB_SHA'],'name':f'{tag} ({a.device})','body':(publish_dir/'notes.md').read_text(),
+   'prerelease':a.update_feed!='true','make_latest':'true' if a.update_feed=='true' else 'false'})
  for path in (publish_dir/name,publish_dir/(name+'.sha256'),publish_dir/'resolved.xml',publish_dir/'release.json',publish_dir/'vendor-tree.txt'):
   upload_asset(release,path,token)
  print('Release:',release['html_url'])
