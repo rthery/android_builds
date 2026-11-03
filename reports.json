@@ -6,6 +6,7 @@
   "tag": "22.2-20261103-UNOFFICIAL-bullhead",
   "tested": "2026-11-03",
   "build_run": "41702337375",
+  "release_run": "41722289135",
   "counts": {
    "Works": 38,
    "Works with limits": 2,
