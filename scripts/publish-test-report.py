@@ -15,6 +15,7 @@ p.add_argument('export',type=pathlib.Path,help='folder with report.json')
 p.add_argument('site',type=pathlib.Path,help='checkout of the test-reports branch')
 p.add_argument('--release',required=True,type=pathlib.Path,help='release.json of the release build')
 p.add_argument('--private-values',type=pathlib.Path,help='file with one private value per line that must never appear')
+p.add_argument('--release-run',help='run that published and attested the package, when it differs from the build run')
 p.add_argument('--repository',default='rthery/android_builds')
 a=p.parse_args()
 
@@ -85,7 +86,8 @@ tag=release['lineage_version']
 built=datetime.datetime.fromtimestamp(int(release['build_date_utc']),datetime.timezone.utc).strftime('%Y-%m-%d')
 tested=report['generatedAt'][:10]
 server='https://github.com/'+a.repository
-run_url=f'{server}/actions/runs/{release["run"]}'
+run=a.release_run or release['run']
+run_url=f'{server}/actions/runs/{run}'
 STYLE='''body{font:15px/1.5 system-ui,sans-serif;margin:0;padding:16px;color:#1b1b1b;background:#fff}main{max-width:820px;margin:auto}
 small{display:block;color:#5f6368;font-size:.85em}h2{font-size:1.1em;margin:1.6em 0 .4em}table{border-collapse:collapse;width:100%}table.r{table-layout:fixed}td,th{text-align:left;padding:6px 8px;border-bottom:1px solid #ddd}
 th{font-weight:600}td.s{white-space:nowrap;width:9em}a{color:#0b57d0}dl{display:grid;grid-template-columns:max-content 1fr;gap:2px 16px;margin:0}dt{color:#5f6368}
@@ -101,7 +103,7 @@ def badge(s):return f'<span class="badge {STATUS_CLASS[s]}">{html.escape(s)}</sp
 header=(f'<h1>{html.escape(phone)} ({html.escape(device)})</h1><dl>'
  f'<dt>ROM</dt><dd>LineageOS {html.escape(version)}, built {built}</dd>'
  f'<dt>Security patch</dt><dd>{html.escape(report["device"].get("Security patch",""))}</dd>'
- f'<dt>Build</dt><dd><a href="{html.escape(run_url)}">GitHub Actions run {html.escape(release["run"])}</a></dd>'
+ f'<dt>{"Release" if a.release_run else "Build"}</dt><dd><a href="{html.escape(run_url)}">GitHub Actions run {html.escape(run)}</a></dd>'
  f'<dt>Tested</dt><dd>{html.escape(tested)} with {html.escape(report["app"])}</dd></dl>')
 body=header+''.join(
  f'<h2>{html.escape(area)}</h2><div class="wrap"><table class="r">'
@@ -115,7 +117,7 @@ if stale.exists():stale.unlink()
 
 manifest_path=a.site/'reports.json'
 manifest=json.loads(manifest_path.read_text()) if manifest_path.exists() else []
-entry={'tree':tree,'device':device,'phone':phone,'tag':tag,'tested':tested,'build_run':release['run'],'counts':counts}
+entry={'tree':tree,'device':device,'phone':phone,'tag':tag,'tested':tested,'build_run':release['run'],**({'release_run':a.release_run} if a.release_run else {}),'counts':counts}
 manifest=[e for e in manifest if (e['tree'],e['tag'])!=(tree,tag)]+[entry]
 manifest.sort(key=lambda e:(e['tree'],e['tag']),reverse=True)
 manifest_path.write_text(json.dumps(manifest,indent=1)+'\n')
