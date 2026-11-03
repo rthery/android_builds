@@ -78,7 +78,11 @@ def prepare():
  with zipfile.ZipFile(signed_dir/'signed-target-files.zip') as signed:recovery.write_bytes(signed.read('IMAGES/recovery.img'))
  recovery.with_name(recovery.name+'.sha256').write_text(f'{sha256(recovery)}  {recovery.name}\n')
  output('recovery',recovery)
- changes=changelog(info['lineage_version'])
+ # An "Android:" line (new Android or LineageOS version) leads; the security patch level comes next.
+ changes=changelog(info['lineage_version']).split('\n')
+ patch=f"- Security patch level: {info['security_patch']}."
+ changes.insert(1 if changes[0].startswith('- Android:') else 0,patch)
+ changes='\n'.join(changes)
  run_url=lambda run:f'{server}/{repository}/actions/runs/{run}'
  runs=(f'[Build and release run]({run_url(a.build_run)})' if a.build_run==env['GITHUB_RUN_ID']
   else f'[Build run]({run_url(a.build_run)}) · [Publish run]({run_url(env["GITHUB_RUN_ID"])})')
@@ -86,7 +90,6 @@ def prepare():
 
 - Test report: https://{repository.split('/')[0]}.github.io/{repository.split('/')[1]}/{a.tree}/{info['lineage_version']}/
 - {runs}
-- Security patch: {info['security_patch']}
 
 ## Changes
 
