@@ -3,7 +3,16 @@ name: Upstream check
 on:
   schedule:
     - cron: '23 4 * * *'
+    # Weekly merge, before the scheduled build in build.yml.
+    - cron: '30 1 * * 6'
   workflow_dispatch:
+    inputs:
+      action:
+        description: What the bot does after the check
+        type: choice
+        options:
+          - prs
+          - merge
 
 permissions:
   contents: read
@@ -25,8 +34,27 @@ jobs:
       - name: Compare lineage-22.2 with upstream
         env:
           GH_TOKEN: ${{ github.token }}
-        run: python3 -I scripts/upstream-check.py bullhead lineage-22.2 --issue --report "$RUNNER_TEMP/report.md"
+        run: python3 -I scripts/upstream-check.py bullhead lineage-22.2 --issue --report "$RUNNER_TEMP/report.md" --json "$RUNNER_TEMP/results.json"
 
       - name: Write the job summary
         if: always()
         run: if [[ -f "$RUNNER_TEMP/report.md" ]]; then cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"; fi
+
+      # The App is installed on this repository and the forks only; it has no workflow permission.
+      - name: Get the upstream bot token
+        id: bot
+        if: vars.UPSTREAM_BOT_CLIENT_ID != ''
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.UPSTREAM_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.UPSTREAM_BOT_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Update merge PRs, or merge them on the weekly run
+        if: steps.bot.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ steps.bot.outputs.token }}
+          ACTION: ${{ (github.event.schedule == '30 1 * * 6' || inputs.action == 'merge') && 'merge' || 'prs' }}
+        run: python3 -I scripts/upstream-bot.py "$RUNNER_TEMP/results.json" "$ACTION"

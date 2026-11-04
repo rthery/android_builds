@@ -14,6 +14,7 @@ import signing_profiles
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('device');p.add_argument('tree')
 p.add_argument('--repository',default='rthery/android_builds')
+p.add_argument('--run',help='sign an existing release run, such as the weekly scheduled build, instead of starting one')
 a=p.parse_args()
 scripts=pathlib.Path(__file__).resolve().parent
 recipe=scripts.parent
@@ -28,7 +29,8 @@ def gh(*args,check=True,**kw):
 def api(path,*args):return json.loads(gh('api',path,*args).stdout or 'null')
 def note(message):print(f'[{datetime.datetime.now():%H:%M:%S}] {message}',flush=True)
 
-tag_date=datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%d')
+run=api(f'repos/{a.repository}/actions/runs/{a.run}') if a.run else None
+tag_date=(datetime.datetime.fromisoformat(run['created_at'].replace('Z','+00:00')) if run else datetime.datetime.now(datetime.timezone.utc)).strftime('%Y%m%d')
 changelog=(config/'CHANGELOG.md').read_text() if (config/'CHANGELOG.md').exists() else ''
 if f'## 22.2-{tag_date}-UNOFFICIAL-{a.device}' not in changelog:
  note(f'Warning: CHANGELOG.md has no section for 22.2-{tag_date}-UNOFFICIAL-{a.device}; the testing job will refuse to publish without it')
@@ -44,9 +46,9 @@ for group in profile['groups']:
 note('Passwords checked against the keys.')
 
 started=datetime.datetime.now(datetime.timezone.utc)
-gh('workflow','run','build.yml','-R',a.repository,'--ref','main','-f',f'device={a.device}','-f',f'tree={a.tree}','-f','mode=release')
-run=None
-for _ in range(30):
+if not run:
+ gh('workflow','run','build.yml','-R',a.repository,'--ref','main','-f',f'device={a.device}','-f',f'tree={a.tree}','-f','mode=release')
+for _ in range(0 if run else 30):
  time.sleep(5)
  runs=api(f'repos/{a.repository}/actions/workflows/build.yml/runs?event=workflow_dispatch&per_page=5')['workflow_runs']
  run=next((r for r in runs if datetime.datetime.fromisoformat(r['created_at'].replace('Z','+00:00'))>=started-datetime.timedelta(seconds=5)),None)

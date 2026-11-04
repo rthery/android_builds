@@ -19,6 +19,7 @@ p.add_argument('tree',help='devices/<device>/<tree> recipe')
 p.add_argument('--repo',default=os.environ.get('GITHUB_REPOSITORY','rthery/android_builds'),help='repository with the releases')
 p.add_argument('--baseline',type=pathlib.Path,help='resolved manifest to compare with instead of the latest release one')
 p.add_argument('--report',type=pathlib.Path,required=True,help='markdown report to write')
+p.add_argument('--json',type=pathlib.Path,help='results for upstream-bot.py and the weekly build')
 p.add_argument('--issue',action='store_true',help='update the weekly tracking issue in --repo')
 a=p.parse_args()
 
@@ -124,7 +125,7 @@ def check_tracked(t):
 def check_fork(f):
  ours,theirs=head[(f['fork'],fork_branch)],head[(f['upstream'],branch)]
  if not ours or not theirs:return {**f,'error':'branch not found'}
- result={**f,'kind':'fork','head':theirs,'ours':ours}
+ result={**f,'kind':'fork','head':theirs,'ours':ours,'pin':recipe_pins.get(f['path'])}
  d=tempfile.mkdtemp(dir=work)
  git(d,'init','-q','--bare')
  for name,repo in (('fork',f['fork']),('up',f['upstream'])):
@@ -195,6 +196,14 @@ lines.append(f'<!-- upstream-check {json.dumps(alerts)} -->')
 body='\n'.join(lines)
 if len(body)>60000:body=re.sub(r'<details>.*?</details>\n','',body,flags=re.S)
 a.report.write_text(body+'\n')
+if a.json:
+ # resolved.xml keeps a generated path's source pin in dest-branch.
+ released={e.get('path') or e.get('name'):e.get('dest-branch') if re.fullmatch(r'[0-9a-f]{40}',e.get('dest-branch') or '') else e.get('revision')
+  for e in resolved.iter('project')}
+ repinned=sorted(path for path,rev in recipe_pins.items() if released.get(path)!=rev)
+ a.json.write_text(json.dumps({'release':tag,'repinned':repinned,'tracked_moved':[r['path'] for r in moved if r['kind']=='tracked'],
+  'changed':bool(repinned or any(r['kind']=='tracked' for r in moved)),'forks':[r for r in results if r['kind']=='fork'],
+  'branch':branch,'fork_branch':fork_branch,'recipe':str(recipe_manifest.relative_to(recipe_dir.parents[2]))},indent=1)+'\n')
 print(body)
 
 if a.issue:

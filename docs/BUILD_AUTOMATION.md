@@ -32,11 +32,17 @@ Release keys never reach the runner or GitHub. From the workspace root the maint
 bash public/android_builds/scripts/release.sh bullhead lineage-22.2
 ```
 
-It asks for the key passwords first and checks them against the key files, starts the `release` run, waits for its build job, signs the target-files on the host (`sign-local-candidate.sh`), checks the package with `verify-signed-candidate.py` (which writes `independent-verification.json`), and approves the run's `testing` environment. The passwords only live in that process and are dropped once signing is done; stopping it publishes nothing.
+It asks for the key passwords first and checks them against the key files, starts the `release` run, waits for its build job, signs the target-files on the host (`sign-local-candidate.sh`), checks the package with `verify-signed-candidate.py` (which writes `independent-verification.json`), and approves the run's `testing` environment. The passwords only live in that process and are dropped once signing is done; stopping it publishes nothing. `--run <run id>` signs an existing release run, such as the weekly scheduled build, instead of starting one.
 
 The `testing` job refuses the package unless the signing report's input hash equals the attested target-files hash, the verification file covers this package, and its whole-file signature verifies against `devices/<codename>/<tree>/releasekey.x509.pem`. It attests the package and creates a prerelease with the release's section of `devices/<codename>/<tree>/CHANGELOG.md` (required) and the package, the recovery image (`IMAGES/recovery.img` of the signed target-files, needed for a first install), their checksums, `resolved.xml`, `release.json` and `vendor-tree.txt`. The package and the recovery image are both attested. The Updater is not offered a prerelease.
 
 After the OTA test on a phone, the maintainer approves the `release` environment on the run page. That job repeats the package checks, refuses a release whose package or checksum differs, marks it as the latest release and replaces the feed asset named by `BUILD_FEED_ASSET`. Both environments require the maintainer's approval; a run can wait up to 30 days for each. Uploads use the job's `GITHUB_TOKEN`; only the two publishing jobs get contents write.
+
+### Upstream updates
+
+`.github/workflows/upstream-check.yml` runs daily on a GitHub-hosted runner. `scripts/upstream-check.py` compares the latest release's `resolved.xml` with the upstream branch heads: each fork against the branch it merges from (`devices/<codename>/<tree>/upstream.json`, with per-fork overrides), checked with a shallow `git merge-tree`, and every other branch-tracked project against its released revision. Moved projects are classed security, core or low (translations only). Results go to one issue per week, labelled `upstream-check`, with a comment for each new conflict or security change.
+
+With the upstream bot App configured (variable `UPSTREAM_BOT_CLIENT_ID`, secret `UPSTREAM_BOT_PRIVATE_KEY`; contents and pull requests write on this repository and the forks, no workflow permission), `scripts/upstream-bot.py` keeps one PR per fork from `upstream/<branch>` into the fork branch. On Saturdays it merges the clean ones with a merge commit and repins them in the tree manifest through a PR on `main`. Forks whose branch holds unpinned commits, and conflicting PRs, are left for the maintainer. `build.yml` then starts a scheduled `release` build when the recipe or upstream changed since the last release; it waits at `testing` for `release.sh --run`.
 
 ### Test reports
 
@@ -88,7 +94,7 @@ There is one existing source tree and cache, with no second Android checkout. Pe
 
 ## Repository settings and use
 
-The workflow's `if:` conditions only protect this workflow. Any workflow file that reaches GitHub Actions in this repository, including one added by a pull request from a fork, can request the `rom-builder` labels. Runner groups restricted to selected workflows are not available to repositories owned by a personal account, so the runner enforces this itself: `scripts/runner-job-started.sh` runs as the runner's job-started hook before any step and fails every job unless it is a `workflow_dispatch` of `.github/workflows/build.yml` on `refs/heads/main` in this repository, started and triggered by the owner. The values it checks come from GitHub's job message and cannot be overridden by a workflow (`GITHUB_*` variables are read-only). A refused job still uses up one just-in-time runner, then the script starts the next one.
+The workflow's `if:` conditions only protect this workflow. Any workflow file that reaches GitHub Actions in this repository, including one added by a pull request from a fork, can request the `rom-builder` labels. Runner groups restricted to selected workflows are not available to repositories owned by a personal account, so the runner enforces this itself: `scripts/runner-job-started.sh` runs as the runner's job-started hook before any step and fails every job unless it is a `workflow_dispatch` or a `schedule` run of `.github/workflows/build.yml` on `refs/heads/main` in this repository, started and triggered by the owner. The values it checks come from GitHub's job message and cannot be overridden by a workflow (`GITHUB_*` variables are read-only). A refused job still uses up one just-in-time runner, then the script starts the next one.
 
 Public repositories cannot turn off fork pull request workflows, so also keep these settings:
 
