@@ -8,10 +8,10 @@
   "build_run": "41702337375",
   "release_run": "41722289135",
   "counts": {
-   "Works": 38,
+   "Works": 39,
    "Works with limits": 2,
    "Doesn't work": 0,
-   "Not tested": 1
+   "Not tested": 0
   }
  }
 ]
