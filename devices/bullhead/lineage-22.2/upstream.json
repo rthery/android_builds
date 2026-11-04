@@ -1,0 +1,25 @@
+{
+  "release_tag_prefix": "22.2-",
+  "upstream_owner": "LineageOS",
+  "upstream_branch": "lineage-22.2",
+  "fork_branch": "lineage-22.2-bullhead",
+  "fork_upstreams": {
+    "hardware/qcom/audio": "Ultra-Legacy-Hippeastrum/android_hardware_qcom_audio"
+  },
+  "security": [
+    {
+      "file": "^build/release/flag_values/[^/]+/RELEASE_PLATFORM_SECURITY_PATCH\\.textproto$"
+    },
+    {
+      "file": "^build/make/core/version_defaults\\.mk$",
+      "added": "PLATFORM_SECURITY_PATCH"
+    },
+    {
+      "file": "^android/[^/]+\\.xml$",
+      "added": "refs/tags/android-"
+    }
+  ],
+  "low": [
+    "/res/values-(?!car/)[a-z]{2,3}(-r[A-Z]{2}|-b\\+[^/]+)?/[^/]*(strings|plurals|arrays)[^/]*\\.xml$"
+  ]
+}

@@ -1,0 +1,32 @@
+name: Upstream check
+
+on:
+  schedule:
+    - cron: '23 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    if: github.repository == 'rthery/android_builds'
+    # Read-only API and shallow git work: a hosted runner, so the rom-builder stays free.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Compare lineage-22.2 with upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 -I scripts/upstream-check.py bullhead lineage-22.2 --issue --report "$RUNNER_TEMP/report.md"
+
+      - name: Write the job summary
+        if: always()
+        run: if [[ -f "$RUNNER_TEMP/report.md" ]]; then cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"; fi
