@@ -31,7 +31,7 @@
     <linkfile src="bootstrap.bash" dest="bootstrap.bash" />
   </project>
   <project path="frameworks/av" name="android_frameworks_av" remote="rthery" revision="f4a0235454b33a812196165022d4e03c3d43b629" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk" />
-  <project path="frameworks/base" name="android_frameworks_base" remote="rthery" revision="f2c840af2c879e57a3a9ebf80b4716cd59ca6f00" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk-cw-fs,pdk-fs,sysui-studio" />
+  <project path="frameworks/base" name="android_frameworks_base" remote="rthery" revision="c4645e64cba953f2c7f292efb284a5e0f27b5452" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk-cw-fs,pdk-fs,sysui-studio" />
   <project path="frameworks/opt/telephony" name="android_frameworks_opt_telephony" remote="rthery" revision="83ac8a06753779cd93f91dde18802ad1f812e77d" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk" />
   <project path="hardware/interfaces" name="android_hardware_interfaces" remote="rthery" revision="03d829a9006e1de3e14633524c58c6269f022658" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk,sysui-studio" />
   <project path="hardware/lineage/interfaces" name="android_hardware_lineage_interfaces" remote="rthery" revision="f07853ec943f7cf0ac83a59842337c9238a93973" upstream="refs/heads/lineage-22.2-bullhead" />
@@ -44,7 +44,7 @@
   <project path="packages/apps/SetupWizard" name="android_packages_apps_SetupWizard" remote="rthery" revision="5783311f20009f5604e5a04949657ce20d059736" upstream="refs/heads/lineage-22.2-bullhead" />
   <project path="packages/apps/Updater" name="android_packages_apps_Updater" remote="rthery" revision="ffd635fcd6fe01e2e79018f77c7061c0329e3c7b" upstream="refs/heads/lineage-22.2-bullhead" />
 
-  <project path="device/lge/bullhead" name="android_device_lge_bullhead" remote="rthery" revision="09639bb48c3832508c7f0f93a8827e802f00ed23" upstream="refs/heads/lineage-22.2-bullhead" />
+  <project path="device/lge/bullhead" name="android_device_lge_bullhead" remote="rthery" revision="02b2911e954db5e0a166a162be4c2edf0bed8d6d" upstream="refs/heads/lineage-22.2-bullhead" />
   <project path="kernel/lge/bullhead" name="android_kernel_lge_bullhead" remote="rthery" revision="d04e3183bc3c3c536001af5697758012f87f9c30" upstream="refs/heads/lineage-22.2-bullhead" />
   <project path="vendor/lge/bullhead" name="nexus5x-dev/vendor_lge_bullhead" remote="github" revision="3bce2e142f622a354ae248214e31b6b4424fdfef" upstream="refs/heads/lineage-20.0" />
 </manifest>
