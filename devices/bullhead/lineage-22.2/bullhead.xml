@@ -44,7 +44,7 @@
   <project path="packages/apps/SetupWizard" name="android_packages_apps_SetupWizard" remote="rthery" revision="5783311f20009f5604e5a04949657ce20d059736" upstream="refs/heads/lineage-22.2-bullhead" />
   <project path="packages/apps/Updater" name="android_packages_apps_Updater" remote="rthery" revision="ffd635fcd6fe01e2e79018f77c7061c0329e3c7b" upstream="refs/heads/lineage-22.2-bullhead" />
 
-  <project path="device/lge/bullhead" name="android_device_lge_bullhead" remote="rthery" revision="ab475dd68b6a26d3bba5d433ca3e548a51500d6b" upstream="refs/heads/lineage-22.2-bullhead" />
-  <project path="kernel/lge/bullhead" name="android_kernel_lge_bullhead" remote="rthery" revision="76a40383a0122028b6af843ee57f5dce91d55218" upstream="refs/heads/lineage-22.2-bullhead" />
+  <project path="device/lge/bullhead" name="android_device_lge_bullhead" remote="rthery" revision="c28aeaff66ed5ad7a4ae9dba697faea36d044dc5" upstream="refs/heads/lineage-22.2-bullhead" />
+  <project path="kernel/lge/bullhead" name="android_kernel_lge_bullhead" remote="rthery" revision="976b726c13ec3883312b560c1dd20db2be099972" upstream="refs/heads/lineage-22.2-bullhead" />
   <project path="vendor/lge/bullhead" name="nexus5x-dev/vendor_lge_bullhead" remote="github" revision="3bce2e142f622a354ae248214e31b6b4424fdfef" upstream="refs/heads/lineage-20.0" />
 </manifest>
