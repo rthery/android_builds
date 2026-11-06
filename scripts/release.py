@@ -33,7 +33,7 @@ run=api(f'repos/{a.repository}/actions/runs/{a.run}') if a.run else None
 tag_date=(datetime.datetime.fromisoformat(run['created_at'].replace('Z','+00:00')) if run else datetime.datetime.now(datetime.timezone.utc)).strftime('%Y%m%d')
 changelog=(config/'CHANGELOG.md').read_text() if (config/'CHANGELOG.md').exists() else ''
 if f'## 22.2-{tag_date}-UNOFFICIAL-{a.device}' not in changelog:
- note(f'Warning: CHANGELOG.md has no section for 22.2-{tag_date}-UNOFFICIAL-{a.device}; the testing job will refuse to publish without it')
+ note(f'Warning: CHANGELOG.md has no section for 22.2-{tag_date}-UNOFFICIAL-{a.device}; write it on main before approving the release environment')
 
 passwords={}
 for group in profile['groups']:

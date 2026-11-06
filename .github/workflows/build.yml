@@ -196,6 +196,9 @@ jobs:
           git remote add origin "${SERVER_URL}/${REPOSITORY}.git"
           git fetch --depth=1 origin "$SOURCE_SHA"
           git checkout --force --detach FETCH_HEAD
+          # Release notes are written after the build: take them from main, everything else from this run.
+          git fetch --depth=1 origin refs/heads/main
+          git checkout FETCH_HEAD -- ':(glob)devices/*/*/CHANGELOG.md'
 
       - name: Check the published package
         env:

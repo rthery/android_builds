@@ -1,6 +1,6 @@
 # LineageOS 22.2 for the Nexus 5X: changes
 
-Each section is copied into the release description of the build with the same tag, with the security patch level line added second after an "Android:" line, first otherwise. Every line reads "Area: plain sentence."
+Each section is copied into the release description of the build with the same tag when the release is approved (it can be written after the build), with the security patch level line added second after an "Android:" line, first otherwise. Every line reads "Area: plain sentence."
 
 ## 22.2-20261106-UNOFFICIAL-bullhead
 

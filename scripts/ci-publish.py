@@ -34,14 +34,17 @@ def sha256(path):
 def output(name,value):
  with open(env['GITHUB_OUTPUT'],'a') as f:f.write(f'{name}={value}\n')
 
+# The testing prerelease may come before the notes; the release job reads CHANGELOG.md from main.
+PENDING='- Release notes: added when this build is released.'
+
 def changelog(tag):
- """The release's section of CHANGELOG.md, which the maintainer writes before publishing."""
+ """The release's section of CHANGELOG.md, required only to promote the release."""
  path=config/'CHANGELOG.md'
- if not path.exists():fail(f'{path} is missing')
- sections=path.read_text().split('\n## ')
+ sections=path.read_text().split('\n## ') if path.exists() else []
  body=next((s.split('\n',1)[1].strip() for s in sections[1:] if s.split('\n',1)[0].strip()==tag),None)
- if not body:fail(f'{path.name} has no section for {tag}')
- return body
+ if body:return body
+ if a.mode=='promote':fail(f'{path.name} on main has no section for {tag}')
+ return PENDING
 
 def prepare():
  info=json.loads((release_dir/'release.json').read_text())
@@ -163,7 +166,7 @@ def promote(release,name,token):
  # The public download URL avoids sending the token on to the storage redirect.
  with urllib.request.urlopen(checksum['browser_download_url']) as response:published=response.read().decode().split()[0]
  if published!=expected:fail(f'{name}.sha256 on the release names another package')
- api('PATCH',release['url'],token,{'prerelease':False,'make_latest':'true'})
+ api('PATCH',release['url'],token,{'prerelease':False,'make_latest':'true','body':(publish_dir/'notes.md').read_text()})
  print('Promoted:',release['html_url'])
  output('release_url',release['html_url'])
 
