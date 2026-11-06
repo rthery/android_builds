@@ -1,6 +1,8 @@
 # LineageOS 22.2 for the Nexus 5X: changes
 
-Each section is copied into the release description of the build with the same tag when the release is approved (it can be written after the build), with the security patch level line added second after an "Android:" line, first otherwise. Every line reads "Area: plain sentence."
+Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/): add a line under "Unreleased" with each change that ships, and rename that section to the release tag before approving the release. The testing prerelease shows "Unreleased" until then. Each tag's section is copied into the release description, with the security patch level line added second after an "Android:" line, first otherwise. Every line reads "Area: plain sentence."
+
+## Unreleased
 
 ## 22.2-20261106-UNOFFICIAL-bullhead
 

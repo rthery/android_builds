@@ -38,13 +38,13 @@ def output(name,value):
 PENDING='- Release notes: added when this build is released.'
 
 def changelog(tag):
- """The release's section of CHANGELOG.md, required only to promote the release."""
+ """The tag's section of CHANGELOG.md; the testing prerelease falls back to Unreleased."""
  path=config/'CHANGELOG.md'
  sections=path.read_text().split('\n## ') if path.exists() else []
- body=next((s.split('\n',1)[1].strip() for s in sections[1:] if s.split('\n',1)[0].strip()==tag),None)
- if body:return body
- if a.mode=='promote':fail(f'{path.name} on main has no section for {tag}')
- return PENDING
+ section=lambda name:next((s.split('\n',1)[1].strip() if '\n' in s else '' for s in sections[1:] if s.split('\n',1)[0].strip()==name),'')
+ if body:=section(tag):return body
+ if a.mode=='promote':fail(f'{path.name} on main has no section for {tag}: rename "## Unreleased" to "## {tag}"')
+ return section('Unreleased') or PENDING
 
 def prepare():
  info=json.loads((release_dir/'release.json').read_text())
