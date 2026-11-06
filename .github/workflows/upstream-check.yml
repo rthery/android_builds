@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '23 4 * * *'
     # Weekly merge, before the scheduled build in build.yml.
-    - cron: '30 1 * * 6'
+    - cron: '0 12 * * 5'
   workflow_dispatch:
     inputs:
       action:
@@ -56,5 +56,5 @@ jobs:
         if: steps.bot.outcome == 'success'
         env:
           GH_TOKEN: ${{ steps.bot.outputs.token }}
-          ACTION: ${{ (github.event.schedule == '30 1 * * 6' || inputs.action == 'merge') && 'merge' || 'prs' }}
+          ACTION: ${{ (github.event.schedule == '0 12 * * 5' || inputs.action == 'merge') && 'merge' || 'prs' }}
         run: python3 -I scripts/upstream-bot.py "$RUNNER_TEMP/results.json" "$ACTION"
