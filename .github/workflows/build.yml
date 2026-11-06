@@ -1,4 +1,6 @@
 name: Android build
+# The mode in the title lets the scheduled build find recent release runs.
+run-name: ${{ github.event_name == 'schedule' && 'release bullhead lineage-22.2 (scheduled)' || format('{0} {1} {2}', inputs.mode, inputs.device, inputs.tree) }}
 
 on:
   # Weekly lineage-22.2 release build after the upstream bot's merge; skipped when no source changed.
@@ -42,6 +44,7 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: read
+      actions: read
     outputs:
       changed: ${{ steps.check.outputs.changed }}
     steps:
@@ -57,6 +60,14 @@ jobs:
           set -euo pipefail
           python3 -I scripts/upstream-check.py bullhead lineage-22.2 --report "$RUNNER_TEMP/report.md" --json "$RUNNER_TEMP/results.json" || true
           changed=$(python3 -I -c 'import json,sys; print(str(json.load(open(sys.argv[1]))["changed"]).lower())' "$RUNNER_TEMP/results.json")
+          # Scheduled runs can start hours late: skip when a release build started in the last 24 hours is running or succeeded.
+          since=$(date -u -d '24 hours ago' +%Y-%m-%dT%H:%M:%SZ)
+          recent=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/build.yml/runs?created=>=$since&per_page=100" \
+            --jq "[.workflow_runs[] | select(.id != $GITHUB_RUN_ID and (.display_title | startswith(\"release \")) and (.conclusion == null or .conclusion == \"success\"))] | .[0].html_url // empty")
+          if [[ -n "$recent" ]]; then
+            changed=false
+            echo "Skipped: release build $recent started in the last 24 hours." >> "$GITHUB_STEP_SUMMARY"
+          fi
           echo "changed=$changed" >> "$GITHUB_OUTPUT"
           cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"
 
