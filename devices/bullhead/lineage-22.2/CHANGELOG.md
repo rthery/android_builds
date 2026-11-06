@@ -2,6 +2,27 @@
 
 Each section is copied into the release description of the build with the same tag, with the security patch level line added second after an "Android:" line, first otherwise. Every line reads "Area: plain sentence."
 
+## 22.2-20261106-UNOFFICIAL-bullhead
+
+- Kernel:
+  - Wi-Fi: networks with protected management frames (PMF optional, or WPA2/WPA3 mixed mode) now connect.
+  - Binder: the driver is updated to the Android 4.19 common kernel version.
+  - eBPF: the arm64 JIT compiler and the eBPF features Android expects from 4.19 and 5.4 kernels are backported, in preparation for Android 16.
+  - Memory: background apps can be compacted (MADV_PAGEOUT and process_madvise are backported).
+  - Storage: eMMC clock scaling is stopped before suspend, a fix from the Qualcomm kernel.
+  - Encryption: file decryption runs on an unbound workqueue, which makes random reads on encrypted storage slightly faster.
+  - Stability: a kernel panic when an app renames one of its threads is fixed.
+- Performance:
+  - App launches: the CPUs are boosted while an app starts.
+  - UI: the foreground app's UI threads run with real-time priority.
+  - Storage: the ROW I/O scheduler is used after boot.
+  - Vendor daemons: they run on the background CPU set.
+  - App start: 64-bit apps start from a pool of pre-forked processes.
+- Memory: background apps are compacted when memory runs low, so more of them stay in memory instead of restarting.
+- Factory reset protection: after a reset, setup asks for the previous screen lock when protection is still on, so moving from a GApps install to one without GApps no longer leaves it stuck. Settings no longer crashes when OEM unlocking is tapped while protection is on.
+- Setup: the time zone detected on the date page is kept.
+- Wi-Fi QR codes: the scanner preview is no longer grey after the first boot.
+
 ## 22.2-20261103-UNOFFICIAL-bullhead
 
 - Android: LineageOS 22.2, based on Android 15, with SELinux enforcing and file-based encryption.
