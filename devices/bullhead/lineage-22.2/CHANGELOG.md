@@ -4,7 +4,6 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/): add a line und
 
 ## Unreleased
 
-- Launcher: the lighter Trebuchet Go launcher replaces Trebuchet, using less than half the memory while switching between many apps. Its Overview is simpler.
 - Storage: writes to shared storage (photos, downloads, files) are about 1.7 times faster and use less CPU. The kernel now sends them to the storage service in batches (FUSE writepages, backported from Linux 3.13).
 
 ## 22.2-20261106-UNOFFICIAL-bullhead
