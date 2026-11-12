@@ -5,6 +5,9 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/): add a line und
 ## Unreleased
 
 - Storage: writes to shared storage (photos, downloads, files) are about 1.7 times faster and use less CPU. The kernel now sends them to the storage service in batches (FUSE writepages, backported from Linux 3.13).
+- Memory:
+  - Zygote: only the 64-bit zygote runs, which frees about 40 MB at idle. WebView now runs as a 64-bit process. Apps that only ship 32-bit native code can no longer be installed, and one that is already installed is removed by the update.
+  - Swap: swappiness is set to 100, so idle app memory is compressed before cached files are dropped. About 22 MB more stays free with 18 apps open.
 
 ## 22.2-20261106-UNOFFICIAL-bullhead
 
