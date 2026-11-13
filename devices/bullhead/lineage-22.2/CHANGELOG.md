@@ -4,6 +4,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/): add a line und
 
 ## Unreleased
 
+- Wi-Fi hotspot: tethered devices stay fast while the screen is off. The phone no longer suspends between bursts of hotspot traffic; it stays awake for 1 second after each one and still sleeps when the connected devices are idle.
 - Storage: writes to shared storage (photos, downloads, files) are about 1.7 times faster and use less CPU. The kernel now sends them to the storage service in batches (FUSE writepages, backported from Linux 3.13).
 - Memory:
   - Zygote: only the 64-bit zygote runs, which frees about 40 MB at idle. WebView now runs as a 64-bit process. Apps that only ship 32-bit native code can no longer be installed, and one that is already installed is removed by the update.
