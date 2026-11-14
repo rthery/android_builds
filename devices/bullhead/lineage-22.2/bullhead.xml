@@ -48,7 +48,7 @@
   <project path="packages/apps/Updater" name="android_packages_apps_Updater" remote="rthery" revision="ffd635fcd6fe01e2e79018f77c7061c0329e3c7b" upstream="refs/heads/lineage-22.2-bullhead" />
   <project path="packages/services/Iwlan" name="android_packages_services_Iwlan" remote="rthery" revision="436692683088d8141c89d0ccba95389b9df68dd7" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk-cw-fs,pdk-fs" />
 
-  <project path="device/lge/bullhead" name="android_device_lge_bullhead" remote="rthery" revision="b99606e2bdd165f1206b25a53b6f1fd78d181bce" upstream="refs/heads/lineage-22.2-bullhead" />
+  <project path="device/lge/bullhead" name="android_device_lge_bullhead" remote="rthery" revision="2c5854c1af2381e26912f253cdb7a6971fee818a" upstream="refs/heads/lineage-22.2-bullhead" />
   <project path="kernel/lge/bullhead" name="android_kernel_lge_bullhead" remote="rthery" revision="21956a4832414901d5258a662973dc5b45066138" upstream="refs/heads/lineage-22.2-bullhead" />
   <project path="vendor/lge/bullhead" name="nexus5x-dev/vendor_lge_bullhead" remote="github" revision="3bce2e142f622a354ae248214e31b6b4424fdfef" upstream="refs/heads/lineage-20.0" />
 </manifest>
