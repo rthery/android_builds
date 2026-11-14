@@ -30,9 +30,10 @@ repo sync -c -j4 --no-clone-bundle --no-tags --fail-fast
 | `hardware/qcom/bt`, `hardware/qcom/gps` | Restore msm8992 support. |
 | `hardware/qcom/display`, `hardware/qcom/media` | Ultra-Legacy-Hippeastrum, which keeps msm8994 and msm8974. |
 | `hardware/sony/timekeep` | Restores the clock before the first unlock. |
-| `packages/apps/Settings` | OEM unlocking is greyed out with an explanation while factory reset protection is active, instead of crashing Settings. |
+| `packages/apps/Settings` | OEM unlocking is greyed out with an explanation while factory reset protection is active, instead of crashing Settings. The Wi-Fi calling switch redraws when the phone turns Wi-Fi calling off by itself. |
 | `packages/apps/SetupWizard` | The date and time page lists the zones of the phone's country and keeps the detected zone, instead of switching to Pacific/Midway when that zone is not in its short list. After a reset with factory reset protection active, setup asks for the previous screen lock to turn it off. |
 | `packages/apps/Updater` | A local update import keeps running when the screen turns off or the app goes to the background. |
+| `packages/services/Iwlan` | Creates the Wi-Fi calling tunnel interface with the real endpoints, which the kernel's VTI tunnels need (it has no XFRM interfaces). |
 
 ## Extract vendor blobs
 

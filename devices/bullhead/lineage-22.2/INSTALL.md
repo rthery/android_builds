@@ -43,6 +43,14 @@ Unofficial build for the LG Nexus 5X (`bullhead`) only.
 
 If your phone has the bootloop of death, start the recovery, open **Advanced options** and choose **Enable 4-core mode (BLOD)**, then confirm. The two big cores stay off from the next boot; **Settings > About phone** shows the mode. Choose **Disable 4-core mode (BLOD)** to go back.
 
+## Wi-Fi calling and VoLTE
+
+Wi-Fi calling is off by default. To use it, open **Settings > Network & internet > SIMs**, choose your SIM and turn on **Wi-Fi calling**. It was tested on SFR (France); other carriers may not accept it. If it does not register, calls and SMS keep going over the mobile network, so turn it off again if it does nothing for you.
+
+A call over Wi-Fi ends if Wi-Fi is lost during the call; it does not move to the mobile network. Emergency calls always go over the mobile network.
+
+VoLTE also needs the modem's IMS settings for your carrier, which the ROM does not write.
+
 ## Bootloader
 
 Keep the bootloader unlocked: locking it again with this ROM installed stops the phone from booting.
