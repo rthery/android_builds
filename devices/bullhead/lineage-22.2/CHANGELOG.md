@@ -6,6 +6,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/): add a line und
 
 - Wi-Fi calling: works on carriers that require SHA-2, such as SFR, and is switched on from the SIM settings, with no adb step. It now runs in Android instead of the modem: outgoing and incoming calls and SMS over Wi-Fi. When it is off or not registered, calls and SMS go over the mobile network as before. Emergency calls never go over Wi-Fi.
 - Kernel: IPsec tunnel interfaces (VTI) and the XFRM output mark are backported for Wi-Fi calling.
+- Kernel: upstream kernfs and cgroup fixes (races when a sysfs or cgroup file is released, cgroup socket and mount option handling) and the bpf_ktime_get_boot_ns eBPF helper, so the optional tethering offload programs that record flow activity now load.
 - Wi-Fi hotspot: tethered devices stay fast while the screen is off. The phone no longer suspends between bursts of hotspot traffic; it stays awake for 1 second after each one and still sleeps when the connected devices are idle.
 - Storage: writes to shared storage (photos, downloads, files) are about 1.7 times faster and use less CPU. The kernel now sends them to the storage service in batches (FUSE writepages, backported from Linux 3.13).
 - Memory:
