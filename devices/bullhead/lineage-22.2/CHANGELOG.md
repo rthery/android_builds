@@ -13,6 +13,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/): add a line und
   - Zygote: only the 64-bit zygote runs, which frees about 40 MB at idle. WebView now runs as a 64-bit process. Apps that only ship 32-bit native code can no longer be installed, and one that is already installed is removed by the update.
   - Swap: swappiness is set to 100, so idle app memory is compressed before cached files are dropped. About 22 MB more stays free with 18 apps open.
 - Mobile data: an SFR preferred APN setting that never took effect is removed. SFR SIMs still use sl2sfr, the only internet APN they match.
+- Wi-Fi calling: when Wi-Fi goes away, calls and SMS move to the mobile network within seconds instead of failing until the next registration refresh, up to 30 minutes later. Calls over Wi-Fi are now marked as Wi-Fi calls in the dialer and the call log.
 
 ## 22.2-20261106-UNOFFICIAL-bullhead
 
