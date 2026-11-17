@@ -36,7 +36,7 @@
   <project path="frameworks/base" name="android_frameworks_base" remote="rthery" revision="c420aa1cb8225f1277fb950adf272fb56fa77673" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk-cw-fs,pdk-fs,sysui-studio" />
   <project path="frameworks/opt/telephony" name="android_frameworks_opt_telephony" remote="rthery" revision="86137f2ce37c1ab4992dcf172f026b304d738b00" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk" />
   <project path="hardware/interfaces" name="android_hardware_interfaces" remote="rthery" revision="394cce97dc6df523250c3257991c2e37d6dc0010" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk,sysui-studio" />
-  <project path="hardware/lineage/interfaces" name="android_hardware_lineage_interfaces" remote="rthery" revision="f07853ec943f7cf0ac83a59842337c9238a93973" upstream="refs/heads/lineage-22.2-bullhead" />
+  <project path="hardware/lineage/interfaces" name="android_hardware_lineage_interfaces" remote="rthery" revision="7f4a3e24d5da4623f3b7b9a517352b4dbef3d2fa" upstream="refs/heads/lineage-22.2-bullhead" />
   <project path="hardware/qcom/audio" name="android_hardware_qcom_audio" remote="rthery" revision="844d1b258996e7459167fe658020547da415075d" upstream="refs/heads/lineage-22.2-bullhead" groups="qcom,qcom_audio,pdk-qcom" />
   <project path="hardware/qcom/bt" name="android_hardware_qcom_bt" remote="rthery" revision="629934c6d0c795207b5d32f9859146edd9e2653e" upstream="refs/heads/lineage-22.2-bullhead" groups="qcom,pdk-qcom" />
   <project path="hardware/qcom/gps" name="android_hardware_qcom_gps" remote="rthery" revision="0f81e065f760356be346345b962e657f59d9471d" upstream="refs/heads/lineage-22.2-bullhead" groups="qcom,qcom_gps,pdk-qcom" />
@@ -48,7 +48,7 @@
   <project path="packages/apps/Updater" name="android_packages_apps_Updater" remote="rthery" revision="ffd635fcd6fe01e2e79018f77c7061c0329e3c7b" upstream="refs/heads/lineage-22.2-bullhead" />
   <project path="packages/services/Iwlan" name="android_packages_services_Iwlan" remote="rthery" revision="f1db8665998f3a90bf370590adc801d0d1075be0" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk-cw-fs,pdk-fs" />
 
-  <project path="device/lge/bullhead" name="android_device_lge_bullhead" remote="rthery" revision="7a11abdb4594abca7449b8ed241c2d7bc7258614" upstream="refs/heads/lineage-22.2-bullhead" />
+  <project path="device/lge/bullhead" name="android_device_lge_bullhead" remote="rthery" revision="c97174c6ab4a596e06f5bee5b844ba87dc79d0bd" upstream="refs/heads/lineage-22.2-bullhead" />
   <project path="kernel/lge/bullhead" name="android_kernel_lge_bullhead" remote="rthery" revision="30e445167cfc69371b37b3da0a3ffc0de7f46b99" upstream="refs/heads/lineage-22.2-bullhead" />
   <project path="vendor/lge/bullhead" name="nexus5x-dev/vendor_lge_bullhead" remote="github" revision="3bce2e142f622a354ae248214e31b6b4424fdfef" upstream="refs/heads/lineage-20.0" />
 </manifest>

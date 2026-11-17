@@ -14,6 +14,11 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/): add a line und
   - Swap: swappiness is set to 100, so idle app memory is compressed before cached files are dropped. About 22 MB more stays free with 18 apps open.
 - Mobile data: an SFR preferred APN setting that never took effect is removed. SFR SIMs still use sl2sfr, the only internet APN they match.
 - Wi-Fi calling: when Wi-Fi goes away, calls and SMS move to the mobile network within seconds instead of failing until the next registration refresh, up to 30 minutes later. Calls over Wi-Fi are now marked as Wi-Fi calls in the dialer and the call log.
+- Wi-Fi calling: stays registered while mobile data is on. SFR keeps one calling registration per SIM, so the modem's own registration over LTE is switched off while Wi-Fi calling is in use and back on when Wi-Fi goes away. Before, the Wi-Fi calling connection was dropped every minute, or silently replaced.
+- Wi-Fi calling: a mobile call no longer drops when Wi-Fi comes back during it; Wi-Fi calling takes over once the call ends.
+- Wi-Fi calling: a Wi-Fi call the network rejects after ringing now ends properly. Before, the phone stayed in a call that blocked new calls until a reboot.
+- Wi-Fi calling: when the network ends the registration, the phone registers again instead of showing Wi-Fi calling as available while incoming calls were lost.
+- Emergency calls: calls placed over the mobile network, outside VoLTE, now reach the modem. The radio service dropped them and they stayed on "Dialing"; this applied while Wi-Fi calling was registered and whenever VoLTE was not. Checked with a test emergency number, not a real emergency call.
 
 ## 22.2-20261106-UNOFFICIAL-bullhead
 
