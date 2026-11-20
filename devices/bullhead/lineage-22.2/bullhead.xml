@@ -33,7 +33,7 @@
     <linkfile src="bootstrap.bash" dest="bootstrap.bash" />
   </project>
   <project path="frameworks/av" name="android_frameworks_av" remote="rthery" revision="e76f65995c97b03aa5a40be7dde595cdcf852223" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk" />
-  <project path="frameworks/base" name="android_frameworks_base" remote="rthery" revision="c420aa1cb8225f1277fb950adf272fb56fa77673" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk-cw-fs,pdk-fs,sysui-studio" />
+  <project path="frameworks/base" name="android_frameworks_base" remote="rthery" revision="fdd8fbe6abec227110c95d931df2767d32f41035" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk-cw-fs,pdk-fs,sysui-studio" />
   <project path="frameworks/opt/telephony" name="android_frameworks_opt_telephony" remote="rthery" revision="86137f2ce37c1ab4992dcf172f026b304d738b00" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk" />
   <project path="hardware/interfaces" name="android_hardware_interfaces" remote="rthery" revision="394cce97dc6df523250c3257991c2e37d6dc0010" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk,sysui-studio" />
   <project path="hardware/lineage/interfaces" name="android_hardware_lineage_interfaces" remote="rthery" revision="7f4a3e24d5da4623f3b7b9a517352b4dbef3d2fa" upstream="refs/heads/lineage-22.2-bullhead" />
@@ -43,9 +43,9 @@
   <project path="hardware/qcom/display" name="Ultra-Legacy-Hippeastrum/android_hardware_qcom_display" remote="github" revision="22c917d9f36c48e252d05910faf81e23fa9677a8" upstream="refs/heads/lineage-22.2" groups="qcom,qcom_display,pdk-qcom" />
   <project path="hardware/qcom/media" name="Ultra-Legacy-Hippeastrum/android_hardware_qcom_media" remote="github" revision="be72de4fa4be75a20794c4b0d5beab982eb95bb5" upstream="refs/heads/lineage-22.2" groups="qcom,pdk-qcom" />
   <project path="hardware/sony/timekeep" name="android_hardware_sony_timekeep" remote="rthery" revision="e19d9cda29cdc1fd67ee8d266555a9cdb84e83af" upstream="refs/heads/lineage-22.2-bullhead" />
-  <project path="packages/apps/Settings" name="android_packages_apps_Settings" remote="rthery" revision="1156ef453c5e5599b7b92d30446de06f22ba4107" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk-fs,pdk-cw-tvc" />
-  <project path="packages/apps/SetupWizard" name="android_packages_apps_SetupWizard" remote="rthery" revision="f1e015c4c295a5c9beed416fe07adc481ad56881" upstream="refs/heads/lineage-22.2-bullhead" />
-  <project path="packages/apps/Updater" name="android_packages_apps_Updater" remote="rthery" revision="ffd635fcd6fe01e2e79018f77c7061c0329e3c7b" upstream="refs/heads/lineage-22.2-bullhead" />
+  <project path="packages/apps/Settings" name="android_packages_apps_Settings" remote="rthery" revision="d549816fad785ebdff0f3fae413b6501bd960378" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk-fs,pdk-cw-tvc" />
+  <project path="packages/apps/SetupWizard" name="android_packages_apps_SetupWizard" remote="rthery" revision="0d667d81d77eb6193255b3abb1ac4d10fab8130d" upstream="refs/heads/lineage-22.2-bullhead" />
+  <project path="packages/apps/Updater" name="android_packages_apps_Updater" remote="rthery" revision="8a7946c42f5700ccaa68a431f3067410b05bdf14" upstream="refs/heads/lineage-22.2-bullhead" />
   <project path="packages/services/Iwlan" name="android_packages_services_Iwlan" remote="rthery" revision="f1db8665998f3a90bf370590adc801d0d1075be0" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk-cw-fs,pdk-fs" />
 
   <project path="device/lge/bullhead" name="android_device_lge_bullhead" remote="rthery" revision="c97174c6ab4a596e06f5bee5b844ba87dc79d0bd" upstream="refs/heads/lineage-22.2-bullhead" />
