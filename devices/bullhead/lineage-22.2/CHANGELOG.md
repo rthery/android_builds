@@ -8,21 +8,19 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/): add a line und
 
 ## 22.2-20261117-UNOFFICIAL-bullhead
 
-- Wi-Fi calling: works on carriers that require SHA-2, such as SFR, and is switched on from the SIM settings, with no adb step. It now runs in Android instead of the modem: outgoing and incoming calls and SMS over Wi-Fi. When it is off or not registered, calls and SMS go over the mobile network as before. Emergency calls never go over Wi-Fi.
-- Kernel: IPsec tunnel interfaces (VTI) and the XFRM output mark are backported for Wi-Fi calling.
-- Kernel: upstream kernfs and cgroup fixes (races when a sysfs or cgroup file is released, cgroup socket and mount option handling) and the bpf_ktime_get_boot_ns eBPF helper, so the optional tethering offload programs that record flow activity now load.
-- Wi-Fi hotspot: tethered devices stay fast while the screen is off. The phone no longer suspends between bursts of hotspot traffic; it stays awake for 1 second after each one and still sleeps when the connected devices are idle.
-- Storage: writes to shared storage (photos, downloads, files) are about 1.7 times faster and use less CPU. The kernel now sends them to the storage service in batches (FUSE writepages, backported from Linux 3.13).
+- Prerelease: this release also contains the changes of the 22.2-20261115 testing build, which was not released.
+- LineageOS: upstream changes merged up to 2026-11-15, with the November 2026 Android security fixes.
+- Wi-Fi calling: works on carriers that require SHA-2. It now runs in Android instead of the modem, for calls and SMS over Wi-Fi, and is switched on from the SIM settings with no adb step. Emergency calls never go over Wi-Fi.
+- Emergency calls: calls placed over the mobile network, outside VoLTE, now reach the modem. Before, the radio service dropped them and they stayed on "Dialing". Checked with a test emergency number, not a real emergency call.
+- Kernel:
+  - Wi-Fi calling: IPsec tunnel interfaces (VTI) and the XFRM output mark are backported.
+  - Wi-Fi hotspot: tethered devices stay fast while the screen is off. The phone stays awake for 1 second after each burst of hotspot traffic and still sleeps when the connected devices are idle.
+  - Storage: writes to shared storage (photos, downloads, files) are about 1.7 times faster and use less CPU (FUSE writepages, backported from Linux 3.13).
+  - Stability: upstream kernfs and cgroup fixes for races when a sysfs or cgroup file is released, and for cgroup socket and mount option handling.
+  - eBPF: the bpf_ktime_get_boot_ns helper is backported, so the optional tethering offload programs that record flow activity now load.
 - Memory:
   - Zygote: only the 64-bit zygote runs, which frees about 40 MB at idle. WebView now runs as a 64-bit process. Apps that only ship 32-bit native code can no longer be installed, and one that is already installed is removed by the update.
   - Swap: swappiness is set to 100, so idle app memory is compressed before cached files are dropped. About 22 MB more stays free with 18 apps open.
-- Mobile data: an SFR preferred APN setting that never took effect is removed. SFR SIMs still use sl2sfr, the only internet APN they match.
-- Wi-Fi calling: when Wi-Fi goes away, calls and SMS move to the mobile network within seconds instead of failing until the next registration refresh, up to 30 minutes later. Calls over Wi-Fi are now marked as Wi-Fi calls in the dialer and the call log.
-- Wi-Fi calling: stays registered while mobile data is on. SFR keeps one calling registration per SIM, so the modem's own registration over LTE is switched off while Wi-Fi calling is in use and back on when Wi-Fi goes away. Before, the Wi-Fi calling connection was dropped every minute, or silently replaced.
-- Wi-Fi calling: a mobile call no longer drops when Wi-Fi comes back during it; Wi-Fi calling takes over once the call ends.
-- Wi-Fi calling: a Wi-Fi call the network rejects after ringing now ends properly. Before, the phone stayed in a call that blocked new calls until a reboot.
-- Wi-Fi calling: when the network ends the registration, the phone registers again instead of showing Wi-Fi calling as available while incoming calls were lost.
-- Emergency calls: calls placed over the mobile network, outside VoLTE, now reach the modem. The radio service dropped them and they stayed on "Dialing"; this applied while Wi-Fi calling was registered and whenever VoLTE was not. Checked with a test emergency number, not a real emergency call.
 
 ## 22.2-20261106-UNOFFICIAL-bullhead
 
