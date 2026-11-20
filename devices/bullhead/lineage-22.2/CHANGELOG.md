@@ -4,6 +4,10 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/): add a line und
 
 ## Unreleased
 
+- Wi-Fi calling: comes back within seconds when the network closes the Wi-Fi calling connection while the phone sleeps. Before, the reconnect waited for the next wake, up to 17 minutes without Wi-Fi calling.
+
+## 22.2-20261117-UNOFFICIAL-bullhead
+
 - Wi-Fi calling: works on carriers that require SHA-2, such as SFR, and is switched on from the SIM settings, with no adb step. It now runs in Android instead of the modem: outgoing and incoming calls and SMS over Wi-Fi. When it is off or not registered, calls and SMS go over the mobile network as before. Emergency calls never go over Wi-Fi.
 - Kernel: IPsec tunnel interfaces (VTI) and the XFRM output mark are backported for Wi-Fi calling.
 - Kernel: upstream kernfs and cgroup fixes (races when a sysfs or cgroup file is released, cgroup socket and mount option handling) and the bpf_ktime_get_boot_ns eBPF helper, so the optional tethering offload programs that record flow activity now load.
