@@ -45,6 +45,7 @@ jobs:
     permissions:
       contents: read
       actions: read
+      deployments: read
     outputs:
       changed: ${{ steps.check.outputs.changed }}
     steps:
@@ -67,6 +68,16 @@ jobs:
           if [[ -n "$recent" ]]; then
             changed=false
             echo "Skipped: release build $recent started in the last 24 hours." >> "$GITHUB_STEP_SUMMARY"
+          fi
+          # A release approved days after its build: skip when one went out in the last 72 hours.
+          deployment=$(gh api "repos/$GITHUB_REPOSITORY/deployments?environment=release&per_page=1" --jq '.[0].id // empty')
+          if [[ -n "$deployment" ]]; then
+            published=$(gh api "repos/$GITHUB_REPOSITORY/deployments/$deployment/statuses" \
+              --jq '[.[] | select(.state == "success")][0].created_at // empty')
+            if [[ -n "$published" && "$published" > "$(date -u -d '72 hours ago' +%Y-%m-%dT%H:%M:%SZ)" ]]; then
+              changed=false
+              echo "Skipped: a release was published at $published, less than 72 hours ago." >> "$GITHUB_STEP_SUMMARY"
+            fi
           fi
           echo "changed=$changed" >> "$GITHUB_OUTPUT"
           cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY"
