@@ -32,7 +32,7 @@
     <linkfile src="root.bp" dest="Android.bp" />
     <linkfile src="bootstrap.bash" dest="bootstrap.bash" />
   </project>
-  <project path="frameworks/av" name="android_frameworks_av" remote="rthery" revision="e76f65995c97b03aa5a40be7dde595cdcf852223" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk" />
+  <project path="frameworks/av" name="android_frameworks_av" remote="rthery" revision="9582f1ddc0f5af857d196ce04fc31c2326f3f880" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk" />
   <project path="frameworks/base" name="android_frameworks_base" remote="rthery" revision="fdd8fbe6abec227110c95d931df2767d32f41035" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk-cw-fs,pdk-fs,sysui-studio" />
   <project path="frameworks/opt/telephony" name="android_frameworks_opt_telephony" remote="rthery" revision="220f728247bc39d4895bd6736c2b53b8a6598602" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk" />
   <project path="hardware/interfaces" name="android_hardware_interfaces" remote="rthery" revision="394cce97dc6df523250c3257991c2e37d6dc0010" upstream="refs/heads/lineage-22.2-bullhead" groups="pdk,sysui-studio" />

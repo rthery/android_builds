@@ -4,6 +4,7 @@ Follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/): add a line und
 
 ## Unreleased
 
+- Wi-Fi calling: the first call after boot now has sound. Before, the other side was silent until the second call.
 - Wi-Fi calling: comes back within seconds when the network closes the Wi-Fi calling connection while the phone sleeps. Before, the reconnect waited for the next wake, up to 17 minutes without Wi-Fi calling.
 
 ## 22.2-20261117-UNOFFICIAL-bullhead
